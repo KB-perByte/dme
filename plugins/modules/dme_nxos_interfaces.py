@@ -601,10 +601,10 @@ from ansible_collections.cisco.dme_nxos.plugins.module_utils.network.dme_nxos.co
     Interfaces,
 )
 
-import debugpy
+# import debugpy
 
-debugpy.listen(5003)
-debugpy.wait_for_client()
+# debugpy.listen(5003)
+# debugpy.wait_for_client()
 
 
 def main():

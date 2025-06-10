@@ -187,7 +187,7 @@ class HttpApi(HttpApiBase):
                     response = self.connection.send(
                         path=path, data=data, method=method.upper(), headers=headers, **kwargs
                     )
-            if "aaa" not in path:
+            if "aaa" or "sys/mo" not in path:
                 return json.loads(response[1].read())["imdata"]
             return response
 
@@ -322,22 +322,26 @@ class HttpApi(HttpApiBase):
 
         return self.send_request(method="GET", path=path)
 
-    def edit_config(self, config, format="json", target="running"):
+    def edit_config(self, candidate, format="json", target="running"):
         """Edit configuration via DME API"""
+        import debugpy
+
+        debugpy.listen(5003)
+        debugpy.wait_for_client()
         if target != "running":
             raise ConnectionError(f"Unsupported config target: {target}")
 
         # Convert config to DME format if needed
-        if isinstance(config, str):
+        if isinstance(candidate, str):
             try:
-                config_data = json.loads(config)
+                config_data = json.loads(candidate[0])
             except json.JSONDecodeError:
                 raise ConnectionError("Invalid JSON configuration")
         else:
-            config_data = config
+            config_data = candidate[0]
 
         # Post configuration to DME
-        return self.send_request(method="POST", path="/api/node/mo/.json", data=config_data)
+        return self.send_request(method="POST", path="/api/mo/sys.json", data=config_data)
 
     def get(self, path, **kwargs):
         """Generic GET operation"""
