@@ -46,6 +46,8 @@ class Interfaces(ResourceModule):
             "description": "descr",
             "speed": "speed",
             "mtu": "mtu",
+            "mac_address": "routerMac",
+            "mode": "layer",
             "duplex": "duplex",
             "snmp": "snmpTrapSt",
             "enabled": "adminSt",
@@ -100,7 +102,7 @@ class Interfaces(ResourceModule):
             if raw_c.get("name"):
                 raw_c["name"] = self.resolve_config_interface_name_as_dme(raw_c["name"])
                 raw_c["enabled"] = "up" if raw_c.get("enabled") else "down"
-                raw_c["snmp"] = "enabled" if raw_c.get("snmp") else "disabled"
+                raw_c["snmp"] = "enable" if raw_c.get("snmp") else "disable"
             interface_raw = {self.map_config_to_dme.get(k, k): v for k, v in raw_c.items()}
             want_config[interface_raw["id"]] = interface_raw
         return want_config

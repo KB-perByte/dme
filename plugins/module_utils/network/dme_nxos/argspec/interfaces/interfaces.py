@@ -41,7 +41,7 @@ class InterfacesArgs(object):  # pylint: disable=R0903
                 "description": {"type": "str"},
                 "enabled": {"type": "bool"},
                 "speed": {"type": "str"},
-                "mode": {"choices": ["layer2", "layer3"], "type": "str"},
+                "mode": {"choices": ["Layer2", "Layer3"], "type": "str"},
                 "mtu": {"type": "str"},
                 "duplex": {"type": "str", "choices": ["full", "half", "auto"]},
                 "ip_forward": {"type": "bool"},

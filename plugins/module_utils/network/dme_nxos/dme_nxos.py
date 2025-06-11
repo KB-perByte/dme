@@ -195,10 +195,10 @@ class HttpApi:
 
     def edit_config(self, candidate=None, commit=True, replace=None, comment=None):
         resp = list()
-        import debugpy
+        # import debugpy
 
-        debugpy.listen(5003)
-        debugpy.wait_for_client()
+        # debugpy.listen(5003)
+        # debugpy.wait_for_client()
         # self.check_edit_config_capability(candidate, commit, replace, comment)
 
         if replace:

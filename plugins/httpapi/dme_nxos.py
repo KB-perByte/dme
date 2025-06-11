@@ -324,10 +324,10 @@ class HttpApi(HttpApiBase):
 
     def edit_config(self, candidate, format="json", target="running"):
         """Edit configuration via DME API"""
-        import debugpy
+        # import debugpy
 
-        debugpy.listen(5003)
-        debugpy.wait_for_client()
+        # debugpy.listen(5003)
+        # debugpy.wait_for_client()
         if target != "running":
             raise ConnectionError(f"Unsupported config target: {target}")
 
