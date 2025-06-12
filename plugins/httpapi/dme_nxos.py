@@ -25,6 +25,8 @@ from ansible.module_utils.connection import ConnectionError
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.httpapi_base import HttpApiBase
 from ansible.utils.display import Display
+import traceback
+import q
 
 display = Display()
 
@@ -41,18 +43,15 @@ class HttpApi(HttpApiBase):
         super(HttpApi, self).__init__(*args, **kwargs)
         self._device_info = None
         self._module_context = {}
+        self._username = ""
 
     def login(self, username, password):
         """Login to NX-OS device using DME API"""
-        # import debugpy
-
-        # debugpy.listen(5003)
-        # debugpy.wait_for_client()
-        # if self.connection._auth:
-        #    return
-
+        stack = traceback.extract_stack()[:-1]
+        q("HTTPAPI:", stack)
         if username and password:
             auth_data = {"aaaUser": {"attributes": {"name": username, "pwd": password}}}
+            self._username = username  # needed for logout
 
             login_path = "/api/aaaLogin.json"
             try:
@@ -67,6 +66,7 @@ class HttpApi(HttpApiBase):
                 # Extract token from response
                 if "imdata" in result and result["imdata"]:
                     token_data = result["imdata"][0]
+                    q("HTTPAPI:", token_data)
                     if "aaaLogin" in token_data:
                         self.connection._auth = token_data["aaaLogin"]["attributes"]["token"]
                         display.vvv(
@@ -93,15 +93,13 @@ class HttpApi(HttpApiBase):
         """Logout from NX-OS device"""
         if self.connection._auth:
             logout_path = "/api/aaaLogout.json"
+            auth_data = {"aaaUser": {"attributes": {"name": self._username}}}
             try:
                 # Set authentication header for logout
                 self.connection.set_option(
                     "headers", {"Cookie": f"APIC-cookie={self.connection._auth}"}
                 )
-                self.send_request(
-                    method="POST",
-                    path=logout_path,
-                )
+                self.send_request(method="POST", path=logout_path, data=auth_data)
                 display.vvv("DME logout successful", host=self.connection.get_option("host"))
             except Exception as e:
                 display.vvv(f"Logout failed: {to_text(e)}", host=self.connection.get_option("host"))
@@ -170,10 +168,11 @@ class HttpApi(HttpApiBase):
             data = json.dumps(data)
 
         try:
+            q("HTTPAPI:", method, path, data)
             response = self.connection.send(
                 path=path, data=data, method=method.upper(), headers=headers, **kwargs
             )
-
+            q("HTTPAPI:", response)
             # Handle token expiration
             if hasattr(response, "status") and response.status in [401, 403]:
                 display.vvv(
@@ -223,6 +222,9 @@ class HttpApi(HttpApiBase):
 
     def get_device_info(self):
         """Get device information via DME API"""
+        stack = traceback.extract_stack()[:-1]
+        q(stack)
+        q("HTTPAPI get device INFO")
         if not self._device_info:
             # if not self.connection._auth:
             #    self.login(
@@ -324,10 +326,6 @@ class HttpApi(HttpApiBase):
 
     def edit_config(self, candidate, format="json", target="running"):
         """Edit configuration via DME API"""
-        # import debugpy
-
-        # debugpy.listen(5003)
-        # debugpy.wait_for_client()
         if target != "running":
             raise ConnectionError(f"Unsupported config target: {target}")
 

@@ -50,6 +50,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     ComplexList,
     to_list,
 )
+import q
 
 
 try:
@@ -94,7 +95,7 @@ class HttpApi:
 
     def run_commands(self, commands, check_rc=True):
         """Runs list of commands on remote device and returns results"""
-
+        q("UTILS RUN COMMANDS", commands)
         try:
             out = self._connection.send_request(commands)
         except ConnectionError as exc:
@@ -194,12 +195,8 @@ class HttpApi:
         return responses
 
     def edit_config(self, candidate=None, commit=True, replace=None, comment=None):
+        q("UTILS EDIT CONFIG", candidate)
         resp = list()
-        # import debugpy
-
-        # debugpy.listen(5003)
-        # debugpy.wait_for_client()
-        # self.check_edit_config_capability(candidate, commit, replace, comment)
 
         if replace:
             candidate = "config replace {0}".format(replace)
@@ -223,21 +220,6 @@ class HttpApi:
             self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
 
         return json.loads(capabilities)
-
-    def check_edit_config_capability(self, candidate=None, commit=True, replace=None, comment=None):
-        operations = self._connection.get_device_operations()
-
-        if not candidate and not replace:
-            raise ValueError("must provide a candidate or replace to load configuration")
-
-        if commit not in (True, False):
-            raise ValueError("'commit' must be a bool, got %s" % commit)
-
-        if replace and not operations.get("supports_replace"):
-            raise ValueError("configuration replace is not supported")
-
-        if comment and not operations.get("supports_commit_comment", False):
-            raise ValueError("commit comment is not supported")
 
     def read_module_context(self, module_key):
         try:
@@ -303,10 +285,7 @@ def get_config(module, flags=None):
 
 
 def run_commands(module, commands, check_rc=True):
-    # import debugpy
-
-    # debugpy.listen(5003)
-    # debugpy.wait_for_client()
+    q("UTILS RUN COMMANDS OUT", commands)
     conn = get_connection(module)
     return conn.run_commands(to_command(module, commands), check_rc)
 
