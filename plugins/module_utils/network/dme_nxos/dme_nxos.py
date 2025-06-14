@@ -50,6 +50,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     ComplexList,
     to_list,
 )
+from typing import List, Dict, Any
 import q
 
 
@@ -204,6 +205,19 @@ class HttpApi:
         responses = self._connection.send_request(
             method="POST", path="/api/mo/sys.json", data=candidate
         )
+        for response in to_list(responses):
+            if response != "{}":
+                resp.append(response)
+        if not resp:
+            resp = [""]
+
+        return resp
+
+    def send_config(self, payload=None, path=""):
+        q("UTILS SEND CONFIG")
+        resp = list()
+
+        responses = self._connection.send_request(method="POST", path=path, data=payload)
         for response in to_list(responses):
             if response != "{}":
                 resp.append(response)
@@ -420,3 +434,51 @@ def read_module_context(module):
 def save_module_context(module, module_context):
     conn = get_connection(module)
     return conn.save_module_context(module._name, module_context)
+
+
+def preform_validation(connection, payload, path):
+    return connection.send_config(payload, path)
+
+
+def parse_config_block(config_text: str) -> List[str]:
+    """
+    Parse configuration text into individual command lines
+
+    Args:
+        config_text (str): Multi-line configuration text
+
+    Returns:
+        List[str]: List of individual configuration commands
+    """
+    lines = []
+    for line in config_text.strip().split("\n"):
+        line = line.rstrip()
+        if line and not line.strip().startswith("!"):  # Skip empty lines and comments
+            lines.append(line)
+    return lines
+
+
+def config_to_jsonrpc_payload(config_lines: List[str], start_id: int = 1) -> List[Dict[str, Any]]:
+    """
+    Convert configuration lines to JSON-RPC payloads
+
+    Args:
+        config_lines (List[str]): List of configuration commands
+        start_id (int): Starting ID for JSON-RPC requests
+
+    Returns:
+        List[Dict]: List of JSON-RPC request payloads
+    """
+    payloads = []
+
+    for i, cmd in enumerate(config_lines):
+        payload = {
+            "jsonrpc": "2.0",
+            "method": "cli_rest",
+            "option": "default",
+            "params": {"cmd": cmd, "version": 1},
+            "id": start_id + i,
+        }
+        payloads.append(payload)
+
+    return payloads

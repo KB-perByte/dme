@@ -48,7 +48,7 @@ class HttpApi(HttpApiBase):
     def login(self, username, password):
         """Login to NX-OS device using DME API"""
         stack = traceback.extract_stack()[:-1]
-        q("HTTPAPI:", stack)
+        # q("HTTPAPI:", stack)
         if username and password:
             auth_data = {"aaaUser": {"attributes": {"name": username, "pwd": password}}}
             self._username = username  # needed for logout
@@ -159,18 +159,22 @@ class HttpApi(HttpApiBase):
         # Add authentication if available
         if self.connection._auth and "Cookie" not in headers:
             headers["Cookie"] = f"APIC-cookie={self.connection._auth}"
+            if data and "ins" in path:
+                json_payload = json.dumps(data, separators=(",", ":"))
+                content_length = len(json_payload.encode("utf-8"))
+                headers["Content-Length"] = str(content_length)
+                headers["Content-Type"] = "application/json-rpc"
 
-        headers.setdefault("Content-Type", "application/json")
-        headers.setdefault("Accept", "application/json")
+        headers["Accept"] = "application/json"
 
         # Prepare data
         if data is not None and not isinstance(data, str):
             data = json.dumps(data)
 
         try:
-            q("HTTPAPI:", method, path, data)
+            q("HTTPAPI SEND  ------>:", method, headers, path, data, **kwargs)
             response = self.connection.send(
-                path=path, data=data, method=method.upper(), headers=headers, **kwargs
+                path=path, data=data, method=method.upper(), headers=headers, timeout=30, **kwargs
             )
             q("HTTPAPI:", response)
             # Handle token expiration
@@ -191,6 +195,7 @@ class HttpApi(HttpApiBase):
             return response
 
         except Exception as e:
+            q("ERRRRRROROROROROROR", e)
             raise ConnectionError(f"Request failed: {to_text(e)}")
 
     def _run_queue(self, queue, output):
@@ -223,7 +228,18 @@ class HttpApi(HttpApiBase):
     def get_device_info(self):
         """Get device information via DME API"""
         stack = traceback.extract_stack()[:-1]
-        q(stack)
+        q(
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        )
+        q(
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        )
+        q(
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        )
+        q(
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        )
         q("HTTPAPI get device INFO")
         if not self._device_info:
             # if not self.connection._auth:
