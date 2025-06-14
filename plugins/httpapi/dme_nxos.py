@@ -62,30 +62,20 @@ class HttpApi(HttpApiBase):
                     result = json.loads(response)
                 else:
                     result = response
-
                 # Extract token from response
-                if "imdata" in result and result["imdata"]:
-                    token_data = result["imdata"][0]
-                    q("HTTPAPI:", token_data)
-                    if "aaaLogin" in token_data:
-                        self.connection._auth = token_data["aaaLogin"]["attributes"]["token"]
-                        display.vvv(
-                            f"DME authentication successful",
-                            host=self.connection.get_option("host"),
-                        )
-                        return
-
-                # Check for error messages
-                if "error" in result:
-                    error_msg = result["error"]["text"]
-                    raise ConnectionError(f"Authentication failed: {error_msg}")
-                else:
-                    raise ConnectionError("Authentication failed: Invalid response format")
+                q(f"DME authentication response: {result}")
+                self.connection._auth = result[0]["aaaLogin"]["attributes"]["token"]
+                display.vvv(
+                    f"DME authentication successful",
+                    host=self.connection.get_option("host"),
+                )
+                q(f"DME authentication successful {self.connection._auth}")
+                return
 
             except ConnectionError:
                 raise
             except Exception as e:
-                raise ConnectionError(f"Authentication failed: {to_text(e)}")
+                raise ConnectionError(f"Authenticationx3x failed: {to_text(e)}")
         else:
             raise ConnectionError("Username and password are required for authentication")
 
@@ -172,29 +162,22 @@ class HttpApi(HttpApiBase):
             data = json.dumps(data)
 
         try:
-            q("HTTPAPI SEND  ------>:", method, headers, path, data, **kwargs)
+            q(f"HTTPAPI SEND {path} ------>:", method, headers, data)
             response = self.connection.send(
                 path=path, data=data, method=method.upper(), headers=headers, timeout=30, **kwargs
             )
-            q("HTTPAPI:", response)
-            # Handle token expiration
-            if hasattr(response, "status") and response.status in [401, 403]:
-                display.vvv(
-                    "Token expired, attempting to refresh", host=self.connection.get_option("host")
-                )
-                self._refresh_token()
+            # q(f"HTTPAPI RESPONSE: {response[1].read()}")
 
-                # Retry with new token
-                if self.connection._auth:
-                    headers["Cookie"] = f"APIC-cookie={self.connection._auth}"
-                    response = self.connection.send(
-                        path=path, data=data, method=method.upper(), headers=headers, **kwargs
-                    )
             if "aaa" or "sys/mo" not in path:
+                q("mess here")
                 return json.loads(response[1].read())["imdata"]
+            q("musk")
+            q(f"after {path}")
             return response
 
         except Exception as e:
+            stack = traceback.extract_stack()[:-1]
+            q(stack)
             q("ERRRRRROROROROROROR", e)
             raise ConnectionError(f"Request failed: {to_text(e)}")
 
@@ -231,16 +214,13 @@ class HttpApi(HttpApiBase):
         q(
             "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
         )
-        q(
-            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-        )
-        q(
-            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-        )
-        q(
-            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-        )
         q("HTTPAPI get device INFO")
+        self._device_info = {
+            "network_os": "nxos",
+            "network_os_version": "unknown",
+            "network_os_model": "unknown",
+            "network_os_hostname": "unknown",
+        }
         if not self._device_info:
             # if not self.connection._auth:
             #    self.login(

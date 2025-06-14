@@ -436,7 +436,7 @@ def save_module_context(module, module_context):
     return conn.save_module_context(module._name, module_context)
 
 
-def perform_validation(payload, path):
+def perform_validation(module, payload, path):
     conn = get_connection(module)
     return conn.send_config(payload, path)
 
