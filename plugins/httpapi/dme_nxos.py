@@ -48,7 +48,7 @@ class HttpApi(HttpApiBase):
     def login(self, username, password):
         """Login to NX-OS device using DME API"""
         stack = traceback.extract_stack()[:-1]
-        q("HTTPAPI:", stack)
+        # q("HTTPAPI:", stack)
         if username and password:
             auth_data = {"aaaUser": {"attributes": {"name": username, "pwd": password}}}
             self._username = username  # needed for logout
@@ -63,10 +63,10 @@ class HttpApi(HttpApiBase):
                 else:
                     result = response
 
-                # Extract token from response
+                # Extract token from response, doesn't go here
                 if "imdata" in result and result["imdata"]:
                     token_data = result["imdata"][0]
-                    q("HTTPAPI:", token_data)
+                    q("LOGIN TOKEN:", token_data)
                     if "aaaLogin" in token_data:
                         self.connection._auth = token_data["aaaLogin"]["attributes"]["token"]
                         display.vvv(
@@ -168,11 +168,11 @@ class HttpApi(HttpApiBase):
             data = json.dumps(data)
 
         try:
-            q("HTTPAPI:", method, path, data)
+            q(f"HTTPAPI SEND {path}----:", method, path, data)
             response = self.connection.send(
                 path=path, data=data, method=method.upper(), headers=headers, **kwargs
             )
-            q("HTTPAPI:", response)
+            q(f"HTTPAPI RESPONSE {path}----:", response)
             # Handle token expiration
             if hasattr(response, "status") and response.status in [401, 403]:
                 display.vvv(
@@ -187,8 +187,11 @@ class HttpApi(HttpApiBase):
                         path=path, data=data, method=method.upper(), headers=headers, **kwargs
                     )
             if "aaa" or "sys/mo" not in path:
+                q("-----HTTPAPI RESPONSE with if condition-----:")
                 return json.loads(response[1].read())["imdata"]
-            return response
+            else:
+                q("-----HTTPAPI RESPONSE else condition-----:")
+                return response
 
         except Exception as e:
             raise ConnectionError(f"Request failed: {to_text(e)}")
@@ -222,9 +225,9 @@ class HttpApi(HttpApiBase):
 
     def get_device_info(self):
         """Get device information via DME API"""
-        stack = traceback.extract_stack()[:-1]
-        q(stack)
-        q("HTTPAPI get device INFO")
+        q(
+            "HTTPAPI get device INFO AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa"
+        )
         if not self._device_info:
             # if not self.connection._auth:
             #    self.login(
@@ -326,6 +329,8 @@ class HttpApi(HttpApiBase):
 
     def edit_config(self, candidate, format="json", target="running"):
         """Edit configuration via DME API"""
+
+        q("HTTPAPI EDIT CONFIG", candidate)
         if target != "running":
             raise ConnectionError(f"Unsupported config target: {target}")
 
