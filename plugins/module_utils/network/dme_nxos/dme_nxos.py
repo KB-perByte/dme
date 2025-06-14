@@ -436,8 +436,9 @@ def save_module_context(module, module_context):
     return conn.save_module_context(module._name, module_context)
 
 
-def preform_validation(connection, payload, path):
-    return connection.send_config(payload, path)
+def perform_validation(payload, path):
+    conn = get_connection(module)
+    return conn.send_config(payload, path)
 
 
 def parse_config_block(config_text: str) -> List[str]:

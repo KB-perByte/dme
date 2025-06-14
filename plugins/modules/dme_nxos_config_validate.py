@@ -339,7 +339,7 @@ from ansible_collections.cisco.dme_nxos.plugins.module_utils.network.dme_nxos.dm
     run_commands,
     parse_config_block,
     config_to_jsonrpc_payload,
-    preform_validation,
+    perform_validation,
 )
 import json
 import q
@@ -445,8 +445,8 @@ def main():
 
     diff_ignore_lines = module.params["diff_ignore_lines"]
     path = module.params["parents"]
-    connection = get_connection(module)
-
+    # connection = get_connection(module)
+    q(module)
     if any((module.params["src"], module.params["lines"])):
         config_raw = ""
         if module.params["lines"]:
@@ -464,7 +464,7 @@ def main():
             # Create formatted payload string (like your example)
             payload_json = json.dumps(payloads, separators=(",", ":"))
 
-            op = preform_validation(connection, payload_json, "\ins")
+            op = perform_validation(payload_json, "/ins")
 
             tp = op
 
