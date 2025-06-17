@@ -19,7 +19,7 @@ version_added: 1.0.0
 import collections
 import json
 import re
-
+import base64
 from ansible.module_utils._text import to_text
 from ansible.module_utils.connection import ConnectionError
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
@@ -152,49 +152,84 @@ class HttpApi(HttpApiBase):
 
     def send_request(self, method="GET", path="/", data=None, headers=None, **kwargs):
         """Send request to DME API"""
-        # Prepare headers
-        if headers is None:
-            headers = {}
+        q("IN SEND REQ")
+        if path == "/ins":
+            q("In /ins")
+            import debugpy
 
-        # Add authentication if available
-        if self.connection._auth and "Cookie" not in headers:
-            headers["Cookie"] = f"APIC-cookie={self.connection._auth}"
+            debugpy.listen(5003)
+            debugpy.wait_for_client()
 
-        headers.setdefault("Content-Type", "application/json")
-        headers.setdefault("Accept", "application/json")
-
-        # Prepare data
-        if data is not None and not isinstance(data, str):
-            data = json.dumps(data)
-
-        try:
-            q(f"HTTPAPI SEND {path}----:", method, path, data)
+            json_payload = json.dumps(data, separators=(",", ":"))
+            content_length = len(json_payload.encode("utf-8"))
+            headers = {
+                "Accept": "application/json",
+                "Content-Length": str(content_length),
+                "Content-Type": "application/json-rpc",
+                "Cookie": f"APIC-cookie={self.connection._auth}",
+            }
             response = self.connection.send(
-                path=path, data=data, method=method.upper(), headers=headers, **kwargs
+                path=path,
+                data=json_payload,
+                method=method.upper(),
+                headers=headers,
             )
-            q(f"HTTPAPI RESPONSE {path}----:", response)
-            # Handle token expiration
-            if hasattr(response, "status") and response.status in [401, 403]:
-                display.vvv(
-                    "Token expired, attempting to refresh", host=self.connection.get_option("host")
+            q("11111111111111PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", rp)
+            response.raise_for_status()
+            rp = response.json()[6]["result"]["msg"]
+            q("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", rp)
+            return rp
+        else:
+            q("In rest all")
+            if headers is None:
+                headers = {}
+
+            # Add authentication if available
+            if self.connection._auth and "Cookie" not in headers:
+                headers["Cookie"] = f"APIC-cookie={self.connection._auth}"
+
+            headers.setdefault("Content-Type", "application/json")
+            headers.setdefault("Accept", "application/json")
+
+            # Prepare data
+            if data is not None and not isinstance(data, str):
+                data = json.dumps(data)
+
+            try:
+                q(f"HTTPAPI SEND {path}----:", method, headers, data)
+                response = self.connection.send(
+                    path=path,
+                    data=data,
+                    method=method.upper(),
+                    headers=headers,
+                    timeout=30,
+                    **kwargs,
                 )
-                self._refresh_token()
-
-                # Retry with new token
-                if self.connection._auth:
-                    headers["Cookie"] = f"APIC-cookie={self.connection._auth}"
-                    response = self.connection.send(
-                        path=path, data=data, method=method.upper(), headers=headers, **kwargs
+                q(f"HTTPAPI RESPONSE {path}----:", response)
+                # Handle token expiration
+                if hasattr(response, "status") and response.status in [401, 403]:
+                    display.vvv(
+                        "Token expired, attempting to refresh",
+                        host=self.connection.get_option("host"),
                     )
-            if "aaa" or "sys/mo" not in path:
-                q("-----HTTPAPI RESPONSE with if condition-----:")
-                return json.loads(response[1].read())["imdata"]
-            else:
-                q("-----HTTPAPI RESPONSE else condition-----:")
-                return response
+                    self._refresh_token()
 
-        except Exception as e:
-            raise ConnectionError(f"Request failed: {to_text(e)}")
+                    # Retry with new token
+                    if self.connection._auth:
+                        headers["Cookie"] = f"APIC-cookie={self.connection._auth}"
+                        response = self.connection.send(
+                            path=path, data=data, method=method.upper(), headers=headers, **kwargs
+                        )
+                if "aaa" or "sys/mo" not in path:
+                    q("-----HTTPAPI RESPONSE with if condition-----:")
+                    return json.loads(response[1].read())["imdata"]
+                else:
+                    q("-----HTTPAPI RESPONSE else condition-----:")
+                    return response
+
+            except Exception as e:
+                q(f"HTTPAPI Exception: {e}")
+                raise ConnectionError(f"Request failed: {to_text(e)}")
 
     def _run_queue(self, queue, output):
         if self._become:
@@ -345,6 +380,16 @@ class HttpApi(HttpApiBase):
 
         # Post configuration to DME
         return self.send_request(method="POST", path="/api/mo/sys.json", data=config_data)
+
+    def validate_config(self, candidate, format="json", target="running"):
+        """Edit configuration via DME API"""
+
+        q("HTTPAPI VALIDATE CONFIG", candidate)
+        if target != "running":
+            raise ConnectionError(f"Unsupported config target: {target}")
+
+        # Post configuration to DME
+        return self.send_request(method="POST", path="/ins", data=candidate)
 
     def get(self, path, **kwargs):
         """Generic GET operation"""

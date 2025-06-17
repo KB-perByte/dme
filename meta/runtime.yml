@@ -1,5 +1,5 @@
 ---
-requires_ansible: ">=2.16.0"
+requires_ansible: '>=2.16.0'
 plugin_routing:
   modules:
     command:
@@ -10,3 +10,5 @@ plugin_routing:
       redirect: cisco.dme_nxos.dme_nxos_interfaces
     ntp_global:
       redirect: cisco.dme_nxos.dme_nxos_ntp_global
+    config_dirty:
+      redirect: cisco.dme_nxos.dme_nxos_config_dirty

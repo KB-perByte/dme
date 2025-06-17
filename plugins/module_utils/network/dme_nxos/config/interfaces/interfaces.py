@@ -66,6 +66,7 @@ class Interfaces(ResourceModule):
         if self.state not in ["parsed", "gathered"]:
             self.generate_commands()
             self._connection.edit_config(candidate=self.commands)
+            self.changed = True
         return self.result
 
     def generate_commands(self):

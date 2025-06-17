@@ -31,6 +31,9 @@ from ansible_collections.cisco.dme_nxos.plugins.module_utils.network.dme_nxos.fa
 from ansible_collections.cisco.dme_nxos.plugins.module_utils.network.dme_nxos.facts.ntp_global.ntp_global import (
     Ntp_globalFacts,
 )
+from ansible_collections.cisco.dme_nxos.plugins.module_utils.network.dme_nxos.facts.config_validate.config_validate import (
+    Config_validateFacts,
+)
 
 
 FACT_LEGACY_SUBSETS = dict(
@@ -44,6 +47,7 @@ FACT_LEGACY_SUBSETS = dict(
 NX_FACT_RESOURCE_SUBSETS = dict(
     interfaces=InterfacesFacts,
     ntp_global=Ntp_globalFacts,
+    config_validate=Config_validateFacts,
 )
 
 
