@@ -1,0 +1,10 @@
+[dme_nxos]
+xxxxxxxxxxxx
+
+[dme_nxos:vars]
+ansible_network_os=cisco.dme_nxos.dme_nxos
+ansible_user=cisco
+ansible_password=xxxxx
+ansible_ssh_pass=xxxxx
+ansible_connection=ansible.netcommon.httpapi
+ansible_httpapi_port=1213
