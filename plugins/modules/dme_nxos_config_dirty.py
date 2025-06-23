@@ -419,7 +419,7 @@ def process_config_to_dme(config_text):
     config_lines = parse_config_block(config_text)
     payloads = config_to_jsonrpc_payload(config_lines)
     payload_json = json.dumps(payloads, separators=(",", ":"))
-    response = send_dme_request(payloads, "54.190.208.146", "cisco", "cisco", "8128")
+    response = send_dme_request(payloads, "xxxxxxxxx", "cisco", "cisco", "xxxxx")
 
     return response
 
