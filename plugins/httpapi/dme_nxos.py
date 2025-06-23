@@ -155,10 +155,10 @@ class HttpApi(HttpApiBase):
         q("IN SEND REQ")
         if path == "/ins":
             q("In /ins")
-            import debugpy
+            # import debugpy
 
-            debugpy.listen(5003)
-            debugpy.wait_for_client()
+            # debugpy.listen(5003)
+            # debugpy.wait_for_client()
 
             json_payload = json.dumps(data, separators=(",", ":"))
             content_length = len(json_payload.encode("utf-8"))
