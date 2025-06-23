@@ -19,8 +19,7 @@ short_description: Interfaces resource module
 description: This module manages the interface attributes of NX-OS interfaces.
 version_added: 1.0.0
 author:
-  - Trishna Guha (@trishnaguha)
-  - Vinay Mulugund (@roverflow)
+  - Sagar Paul (@KB-perByte)
 notes:
   - Tested against NXOS 10.4(2) on CML
   - Unsupported for Cisco MDS

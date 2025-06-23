@@ -25,7 +25,7 @@ DOCUMENTATION = """
 module: nxos_config
 extends_documentation_fragment:
 - cisco.dme_nxos.nxos
-author: Peter Sprygada (@privateip)
+author: Sagar Paul (@KB-perByte)
 short_description: Manage Cisco NXOS configuration sections
 description:
 - Cisco NXOS configurations use a simple block indent file syntax for segmenting configuration
@@ -419,7 +419,7 @@ def process_config_to_dme(config_text):
     config_lines = parse_config_block(config_text)
     payloads = config_to_jsonrpc_payload(config_lines)
     payload_json = json.dumps(payloads, separators=(",", ":"))
-    response = send_dme_request(payloads, "xxxxxxxxxx", "cisco", "cisco", xxxxx)
+    response = send_dme_request(payloads, "xxxxxxxxxx", "cisco", "cisco", "xxxxx")
 
     return response
 
@@ -460,12 +460,6 @@ def main():
 
     result = {"changed": False, "warnings": warnings}
     # connection = get_connection(module)
-    config_block = """interface Ethernet1/2
-      description bar
-      speed 100000
-      duplex full
-      mtu 4096
-      ip forward"""
 
     if any((module.params.get("src"), module.params.get("lines"))):
         config_raw = ""
