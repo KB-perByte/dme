@@ -8,7 +8,7 @@ This collection provides modules and plugins to interact with Cisco devices usin
 
 ## Requirements
 
-- Ansible >= 2.9
+- Ansible >= 2.16.0
 - Python >= 3.6
 - `ansible.netcommon` collection
 - `ansible.utils` collection
