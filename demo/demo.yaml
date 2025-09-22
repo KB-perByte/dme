@@ -1,0 +1,27 @@
+---
+- name: Demo Nxos DME feature
+  hosts: dme
+  gather_facts: false
+  tasks:
+    - name: Show DME configuration information
+      cisco.dme.dme_command:
+        read_dn:
+          entry: "sys/intf/phys-[eth1/2]"
+          rsp_prop_include: "config-only"
+
+    - name: Config validation on box with direct configuration
+      cisco.dme.dme_validate:
+        lines:
+          - description An good description for this demo
+        parents: interface Ethernet1/2
+      register: result_validation
+
+    - name: Config application on box with DME model
+      cisco.dme.dme_config:
+        config: "{{ result_validation.model }}"
+
+    - name: Show DME configuration information
+      cisco.dme.dme_command:
+        read_dn:
+          entry: "sys/intf/phys-[eth1/2]"
+          rsp_prop_include: "config-only"

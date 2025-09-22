@@ -1,0 +1,179 @@
+❯ ansible-playbook demo.yaml -vvv
+ansible-playbook [core 2.16.0]
+  config file = /home/of/batman/ansible.cfg
+  configured module search path = ['/home/of/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/of/.pyenv/versions/testation_libssh/lib/python3.13/site-packages/ansible
+  ansible collection location = /home/of/Work/AnsibleNetwork/collections
+  executable location = /home/of/.pyenv/versions/testation_libssh/bin/ansible-playbook
+  python version = 3.13.4 (main, Jul 24 2025, 10:45:50) [GCC 15.1.1 20250521 (Red Hat 15.1.1-2)] (/home/of/.pyenv/versions/testation_libssh/bin/python)
+  jinja version = 3.1.6
+  libyaml = True
+Using /home/of/batman/ansible.cfg as config file
+host_list declined parsing /home/of/batman/inventory as it did not pass its verify_file() method
+script declined parsing /home/of/batman/inventory as it did not pass its verify_file() method
+auto declined parsing /home/of/batman/inventory as it did not pass its verify_file() method
+Parsed /home/of/batman/inventory inventory source with ini plugin
+Skipping callback 'default', as we already have a stdout callback.
+Skipping callback 'minimal', as we already have a stdout callback.
+Skipping callback 'oneline', as we already have a stdout callback.
+
+PLAYBOOK: demo.yaml **************************************************************************************************************************************************************
+1 plays in demo.yaml
+
+PLAY [Demo around Nxos DME feature] *******************************************************************************************************************************************************
+
+TASK [Show DME configuration information] *************************************************************************************************************************************************
+task path: /home/of/batman/demo.yaml:6
+changed: [IAMBATMON] => 
+    changed: 200
+    mo:
+        imdata:
+        -   l1PhysIf:
+                attributes:
+                    FECMode: auto
+                    accessVlan: vlan-1
+                    adminSt: up
+                    autoNeg: 'on'
+                    beacon: 'off'
+                    bw: default
+                    controllerId: ''
+                    delay: '1'
+                    descr: Bad description for this demo
+                    dfeAdaptiveTuning: enable
+                    dfeTuningDelay: '100'
+                    dn: sys/intf/phys-[eth1/2]
+                    dot1qEtherType: '0x8100'
+                    duplex: auto
+                    id: eth1/2
+                    inhBw: '4294967295'
+                    ituChannel: '32'
+                    layer: Layer2
+                    linkActiveJitterMgmt: disable
+                    linkDebounce: '100'
+                    linkDebounceLinkUp: '0'
+                    linkFlapErrDis: disable
+                    linkFlapErrorMax: '30'
+                    linkFlapErrorSeconds: '420'
+                    linkLog: default
+                    linkLoopback: disable
+                    linkMacUpTimer: '0'
+                    linkMaxBringUpTimer: '0'
+                    linkTransmitReset: enable
+                    mdix: auto
+                    mediaType: none
+                    medium: broadcast
+                    mode: access
+                    mtu: '1500'
+                    name: ''
+                    nativeVlan: vlan-1
+                    packetTimestampEgressSourceId: '0'
+                    packetTimestampIngressSourceId: '0'
+                    packetTimestampState: disable
+                    portT: leaf
+                    routerMac: not-applicable
+                    snmpTrapSt: enable
+                    spanMode: not-a-span-dest
+                    speed: auto
+                    speedGroup: auto
+                    transMode: not-a-trans-port
+                    trunkLog: default
+                    trunkVlans: 1-4094
+                    uniDirectionalEthernet: disable
+                    usage: discovery
+                    userCfgdFlags: ''
+                    voicePortCos: none
+                    voicePortTrust: disable
+                    voiceVlanId: none
+                    voiceVlanType: none
+        totalCount: '1'
+
+TASK [Config validation on box with direct configuration] *********************************************************************************************************************************
+task path: /home/of/batman/demo.yaml:12
+<IAMBATMON> ESTABLISH HTTP(S) CONNECTFOR USER: cisco TO http://IAMBATMON:ABCD
+changed: [IAMBATMON] => 
+    changed: true
+    model:
+        topSystem:
+            children:
+            -   interfaceEntity:
+                    children:
+                    -   l1PhysIf:
+                            attributes:
+                                descr: An good description for this demo
+                                id: eth1/2
+    valid: true
+
+TASK [Config application on box with DME model] *******************************************************************************************************************************************
+task path: /home/of/batman/demo.yaml:19
+changed: [IAMBATMON] => 
+    changed: true
+    dme_response:
+        imdata: []
+
+TASK [Show DME configuration information] *************************************************************************************************************************************************
+task path: /home/of/batman/demo.yaml:23
+changed: [IAMBATMON] => 
+    changed: 200
+    mo:
+        imdata:
+        -   l1PhysIf:
+                attributes:
+                    FECMode: auto
+                    accessVlan: vlan-1
+                    adminSt: up
+                    autoNeg: 'on'
+                    beacon: 'off'
+                    bw: default
+                    controllerId: ''
+                    delay: '1'
+                    descr: An good description for this demo
+                    dfeAdaptiveTuning: enable
+                    dfeTuningDelay: '100'
+                    dn: sys/intf/phys-[eth1/2]
+                    dot1qEtherType: '0x8100'
+                    duplex: auto
+                    id: eth1/2
+                    inhBw: '4294967295'
+                    ituChannel: '32'
+                    layer: Layer2
+                    linkActiveJitterMgmt: disable
+                    linkDebounce: '100'
+                    linkDebounceLinkUp: '0'
+                    linkFlapErrDis: disable
+                    linkFlapErrorMax: '30'
+                    linkFlapErrorSeconds: '420'
+                    linkLog: default
+                    linkLoopback: disable
+                    linkMacUpTimer: '0'
+                    linkMaxBringUpTimer: '0'
+                    linkTransmitReset: enable
+                    mdix: auto
+                    mediaType: none
+                    medium: broadcast
+                    mode: access
+                    mtu: '1500'
+                    name: ''
+                    nativeVlan: vlan-1
+                    packetTimestampEgressSourceId: '0'
+                    packetTimestampIngressSourceId: '0'
+                    packetTimestampState: disable
+                    portT: leaf
+                    routerMac: not-applicable
+                    snmpTrapSt: enable
+                    spanMode: not-a-span-dest
+                    speed: auto
+                    speedGroup: auto
+                    transMode: not-a-trans-port
+                    trunkLog: default
+                    trunkVlans: 1-4094
+                    uniDirectionalEthernet: disable
+                    usage: discovery
+                    userCfgdFlags: ''
+                    voicePortCos: none
+                    voicePortTrust: disable
+                    voiceVlanId: none
+                    voiceVlanType: none
+        totalCount: '1'
+
+PLAY RECAP ********************************************************************************************************************************************************************************
+IAMBATMON               : ok=4    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   

@@ -1,0 +1,12 @@
+# Inventory
+
+[dme]
+IAMBATMON
+
+[dme:vars]
+ansible_host={{ host_ip }}
+ansible_network_os=cisco.dme.dme
+ansible_user={{ appliance_username }}
+ansible_password={{ appliance_password }}
+ansible_connection=ansible.netcommon.httpapi
+ansible_httpapi_port={{ appliance_nxapi_port }}

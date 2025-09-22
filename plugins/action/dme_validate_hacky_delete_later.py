@@ -59,18 +59,14 @@ class ActionModule(ActionBase):
         return api_response, True
 
     def configure_module_rpc(self, dme_request, payload):
-        q(3)
-        code, api_response = dme_request.rpc_get(
+
+        _, api_response = dme_request.rpc_get(
             "{0}".format(self.api_object),
             data=payload,
         )
         return api_response, True
 
     def run(self, tmp=None, task_vars=None):
-        # import debugpy
-
-        # debugpy.listen(3000)
-        # debugpy.wait_for_client()
         self._supports_check_mode = True
         self._result = super(ActionModule, self).run(tmp, task_vars)
         self._result["changed"] = False
@@ -91,9 +87,6 @@ class ActionModule(ActionBase):
         #     "",
         # )
         
-        q(self._result)
-        q("moving to the rpc call")
-        q(self._task.args["config"])
         (
             self._result[self.module_return],
             self._result["changed"],

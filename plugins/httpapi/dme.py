@@ -47,7 +47,6 @@ class HttpApi(HttpApiBase):
         data=None,
         headers=None,
     ):
-        q("in send_request DME-new", data)
         
         params = params if params else {}
         headers = headers if headers else BASE_HEADERS
@@ -61,8 +60,7 @@ class HttpApi(HttpApiBase):
             url = "{0}?{1}".format(url, urlencode(params_with_val))
         try:
             self._display_request(request_method)
-            q(headers)
-            q(url)
+
             response, response_data = self.connection.send(
                 url,
                 to_bytes(json.dumps(data)),
@@ -150,11 +148,6 @@ class HttpApi(HttpApiBase):
             return response_text
 
     def login(self, username, password):
-        # import debugpy
-
-        # debugpy.listen(3000)
-        # debugpy.wait_for_client()
-        q("in login DME-new")
         
         login_path = LOGIN_URL
         auth_data = {"aaaUser": {"attributes": {"name": username, "pwd": password}}}
@@ -183,7 +176,6 @@ class HttpApi(HttpApiBase):
             )
 
     def logout(self):
-        q("in logout DME-new")
         if self.connection._auth is not None:
             code, auth_data_raw = self.send_request(
                 "POST",
@@ -194,7 +186,6 @@ class HttpApi(HttpApiBase):
                     }
                 }
             )
-            q(auth_data_raw)
             # Clean up all tokens
             self.connection._auth = None
             self._auth_token = None

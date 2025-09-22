@@ -21,6 +21,21 @@ author: Sagar Paul (@KB-perByte)
 """
 
 EXAMPLES = """
+# Inventory
+
+# [dme_nxos]
+# IAMBATMON
+
+# [dme_nxos:vars]
+# ansible_host={{ host_ip }}
+# ansible_network_os=cisco.dme.dme
+# ansible_user={{ appliance_username }}
+# ansible_password={{ appliance_password }}
+# ansible_connection=ansible.netcommon.httpapi
+# ansible_httpapi_port={{ appliance_nxapi_port }}
+
+# Apply provided configuration in form of DME model
+
 ## Playbook
 
 - name: Show DME configuration information
