@@ -18,7 +18,6 @@ version_added: 1.0.0
 import base64
 import json
 
-import q
 from ansible.errors import AnsibleAuthenticationFailure
 from ansible.module_utils.basic import to_bytes, to_text
 from ansible.module_utils.six.moves.urllib.error import HTTPError

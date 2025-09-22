@@ -10,17 +10,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-import q
-from ansible.errors import AnsibleActionFail
 from ansible.module_utils.connection import Connection
-from ansible.module_utils.six import iteritems
 from ansible.plugins.action import ActionBase
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
-from ansible_collections.ansible.utils.plugins.module_utils.common.argspec_validate import (
-    AnsibleArgSpecValidator,
-)
 from ansible_collections.cisco.dme.plugins.module_utils.dme import DmeRequest
 
 
