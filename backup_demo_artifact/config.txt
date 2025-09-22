@@ -1,0 +1,6 @@
+interface Ethernet1/2
+   description A really long description for this demo
+   no speed 10000
+   duplex full
+   mtu 4096
+   ip forward
