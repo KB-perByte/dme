@@ -4,7 +4,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -106,7 +105,7 @@ EXAMPLES = """
 ## Output
 # TASK [Config validation on box with direct configuration  - Intentional Mistake] **************************************************************
 # task path: /home/sagpaul/Work/AnsibleNetwork/testathon/dme_nxos_play.yaml:6
-# fatal: [IAMBATMON]: FAILED! => 
+# fatal: [IAMBATMON]: FAILED! =>
 #     changed: false
 #     errors:
 #         1: idescription An intentional mistake in description

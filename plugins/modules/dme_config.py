@@ -4,7 +4,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -57,7 +56,7 @@ EXAMPLES = """
 
 ## Output
 # TASK [Show DME configuration information] *******************************************************
-# changed: [IAMBATMON] => 
+# changed: [IAMBATMON] =>
 #     changed: 200
 #     mo:
 #         imdata:
@@ -121,7 +120,7 @@ EXAMPLES = """
 #         totalCount: '1'
 
 # TASK [Config validation on box with direct configuration] *********************************************
-# changed: [IAMBATMON] => 
+# changed: [IAMBATMON] =>
 #     changed: true
 #     model:
 #         topSystem:
@@ -135,7 +134,7 @@ EXAMPLES = """
 #     valid: true
 
 # TASK [Config application on box with DME model] *****************************************************
-# changed: [IAMBATMON] => 
+# changed: [IAMBATMON] =>
 #     changed: true
 #     dme_response:
 #         imdata: []

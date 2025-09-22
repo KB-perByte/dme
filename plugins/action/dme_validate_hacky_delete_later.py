@@ -8,9 +8,9 @@ The module file for testing
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
+import q
 from ansible.errors import AnsibleActionFail
 from ansible.module_utils.connection import Connection
 from ansible.module_utils.six import iteritems
@@ -21,12 +21,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
 from ansible_collections.ansible.utils.plugins.module_utils.common.argspec_validate import (
     AnsibleArgSpecValidator,
 )
+from ansible_collections.cisco.dme.plugins.module_utils.dme import DmeRequest
 
-from ansible_collections.cisco.dme.plugins.module_utils.dme import (
-    DmeRequest,
-)
-
-import q
 
 class ActionModule(ActionBase):
     """action module"""
@@ -40,7 +36,6 @@ class ActionModule(ActionBase):
         self.api_return = "logInspectionRules"
         self.module_return = "log_inspection_rules"
 
-
     def log_files_fn(self, module_params):
         temp_obj = {}
         if module_params.get("log_files"):
@@ -53,7 +48,9 @@ class ActionModule(ActionBase):
 
     def configure_module_api(self, dme_request, payload):
         code, api_response = dme_request.get(
-            "{0}".format("/api/node/class/ipv4aclACL.json?rsp-prop-include=config-only"),
+            "{0}".format(
+                "/api/node/class/ipv4aclACL.json?rsp-prop-include=config-only",
+            ),
             data="",
         )
         return api_response, True
@@ -72,7 +69,7 @@ class ActionModule(ActionBase):
         self._result["changed"] = False
         if self._result.get("failed"):
             return self._result
-        
+
         conn = Connection(self._connection.socket_path)
         conn_request = DmeRequest(
             connection=conn,
@@ -86,7 +83,7 @@ class ActionModule(ActionBase):
         #     conn_request,
         #     "",
         # )
-        
+
         (
             self._result[self.module_return],
             self._result["changed"],

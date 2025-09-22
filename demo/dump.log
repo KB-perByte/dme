@@ -24,7 +24,7 @@ PLAY [Demo around Nxos DME feature] ********************************************
 
 TASK [Show DME configuration information] *************************************************************************************************************************************************
 task path: /home/of/batman/demo.yaml:6
-changed: [IAMBATMON] => 
+changed: [IAMBATMON] =>
     changed: 200
     mo:
         imdata:
@@ -90,7 +90,7 @@ changed: [IAMBATMON] =>
 TASK [Config validation on box with direct configuration] *********************************************************************************************************************************
 task path: /home/of/batman/demo.yaml:12
 <IAMBATMON> ESTABLISH HTTP(S) CONNECTFOR USER: cisco TO http://IAMBATMON:ABCD
-changed: [IAMBATMON] => 
+changed: [IAMBATMON] =>
     changed: true
     model:
         topSystem:
@@ -105,14 +105,14 @@ changed: [IAMBATMON] =>
 
 TASK [Config application on box with DME model] *******************************************************************************************************************************************
 task path: /home/of/batman/demo.yaml:19
-changed: [IAMBATMON] => 
+changed: [IAMBATMON] =>
     changed: true
     dme_response:
         imdata: []
 
 TASK [Show DME configuration information] *************************************************************************************************************************************************
 task path: /home/of/batman/demo.yaml:23
-changed: [IAMBATMON] => 
+changed: [IAMBATMON] =>
     changed: 200
     mo:
         imdata:
@@ -176,4 +176,4 @@ changed: [IAMBATMON] =>
         totalCount: '1'
 
 PLAY RECAP ********************************************************************************************************************************************************************************
-IAMBATMON               : ok=4    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+IAMBATMON               : ok=4    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0

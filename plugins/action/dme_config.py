@@ -8,22 +8,15 @@ The module file for dme_config module
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 from ansible.module_utils.connection import Connection
 from ansible.plugins.action import ActionBase
-
 from ansible_collections.ansible.utils.plugins.module_utils.common.argspec_validate import (
     AnsibleArgSpecValidator,
 )
-
-from ansible_collections.cisco.dme.plugins.module_utils.dme import (
-    DmeRequest,
-)
-from ansible_collections.cisco.dme.plugins.modules.dme_config import (
-    DOCUMENTATION,
-)
+from ansible_collections.cisco.dme.plugins.module_utils.dme import DmeRequest
+from ansible_collections.cisco.dme.plugins.modules.dme_config import DOCUMENTATION
 
 
 class ActionModule(ActionBase):
@@ -57,13 +50,13 @@ class ActionModule(ActionBase):
     def run(self, tmp=None, task_vars=None):
         self._supports_check_mode = False
         self._result = super(ActionModule, self).run(tmp, task_vars)
-        
+
         self._check_argspec()
-        
+
         self._result["changed"] = False
         if self._result.get("failed"):
             return self._result
-        
+
         conn = Connection(self._connection.socket_path)
         conn_request = DmeRequest(
             connection=conn,

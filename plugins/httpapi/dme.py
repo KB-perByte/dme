@@ -3,22 +3,22 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 DOCUMENTATION = """
 author: Sagar Paul (@KB-perByte)
 name: dme
-short_description: HttpApi Plugin for Cisco Nxos Data Management Engine (DME) 
+short_description: HttpApi Plugin for Cisco Nxos Data Management Engine (DME)
 description:
 - This HttpApi plugin provides methods to connect to Cisco Nxos Data Management Engine (DME) over
   a HTTP(S)-based api.
 version_added: 1.0.0
 """
 
-import json
 import base64
+import json
 
+import q
 from ansible.errors import AnsibleAuthenticationFailure
 from ansible.module_utils.basic import to_bytes, to_text
 from ansible.module_utils.six.moves.urllib.error import HTTPError
@@ -26,7 +26,6 @@ from ansible.module_utils.six.moves.urllib.parse import urlencode
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.httpapi_base import (
     HttpApiBase,
 )
-import q
 
 BASE_HEADERS = {
     "Content-Type": "application/json",
@@ -47,11 +46,11 @@ class HttpApi(HttpApiBase):
         data=None,
         headers=None,
     ):
-        
+
         params = params if params else {}
         headers = headers if headers else BASE_HEADERS
         data = data if data else {}
-            
+
         if params:
             params_with_val = {}
             for param in params:
@@ -84,7 +83,7 @@ class HttpApi(HttpApiBase):
     ):
         # TODO
         secure = False
-        
+
         # extras
         connection_options = self.connection.get_options()
         username = connection_options.get("remote_user")
@@ -97,10 +96,12 @@ class HttpApi(HttpApiBase):
         headers = {
             "Authorization": self._auth_header,
             "Content-Type": "application/json-rpc",
-            "Host": self.connection.get_options().get("host") + ":" + to_text(self.connection.get_options().get("port")),
+            "Host": self.connection.get_options().get("host")
+            + ":"
+            + to_text(self.connection.get_options().get("port")),
             "Origin": self.connection._url,
-            "Referer":  self.connection._url + "/",
-            "anticsrf": "x45D+4TZAWSJq"
+            "Referer": self.connection._url + "/",
+            "anticsrf": "x45D+4TZAWSJq",
         }
         params = params if params else {}
 
@@ -114,12 +115,18 @@ class HttpApi(HttpApiBase):
             url = "{0}?{1}".format(url, urlencode(params_with_val))
         try:
             self._display_request(request_method)
-            
+
             # I am not proud of this but this can move to the connection plugin native implementation
             import requests
+
             session = requests.Session()
             session.verify = False
-            response_data = session.post(self.connection._url+"/ins", data=to_bytes(json.dumps(data)), headers=headers, timeout=30)           
+            response_data = session.post(
+                self.connection._url + "/ins",
+                data=to_bytes(json.dumps(data)),
+                headers=headers,
+                timeout=30,
+            )
 
             error_map = {}
             json_response = response_data.json()
@@ -130,7 +137,10 @@ class HttpApi(HttpApiBase):
         except HTTPError as e:
             error = json.loads(e.read())
             return e.code, error
-        return 200, {"dme_data": json.loads(json_response[-1]["result"]["msg"]), "errors": error_map}
+        return 200, {
+            "dme_data": json.loads(json_response[-1]["result"]["msg"]),
+            "errors": error_map,
+        }
 
     def _display_request(self, request_method):
         self.connection.queue_message(
@@ -148,7 +158,7 @@ class HttpApi(HttpApiBase):
             return response_text
 
     def login(self, username, password):
-        
+
         login_path = LOGIN_URL
         auth_data = {"aaaUser": {"attributes": {"name": username, "pwd": password}}}
 
@@ -162,13 +172,12 @@ class HttpApi(HttpApiBase):
                 )
 
             auth_data = auth_data_raw.get("imdata")[0].get("aaaLogin").get("attributes")
-            
-            self._auth_token = auth_data.get("token")    
+
+            self._auth_token = auth_data.get("token")
             self.connection._auth = {"Cookie": f"APIC-cookie={self._auth_token}"}
             self._session_id = auth_data.get("sessionId")
             self._username = auth_data.get("userName")
             self._siteFineprint = auth_data.get("siteFingerprint")
-            
 
         except KeyError:
             raise AnsibleAuthenticationFailure(
@@ -182,9 +191,9 @@ class HttpApi(HttpApiBase):
                 LOGOUT_URL,
                 data={
                     "aaaUser": {
-                        "attributes": {"name": ""}
-                    }
-                }
+                        "attributes": {"name": ""},
+                    },
+                },
             )
             # Clean up all tokens
             self.connection._auth = None

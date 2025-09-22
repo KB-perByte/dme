@@ -4,13 +4,12 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 DOCUMENTATION = """
 module: dme_command
 short_description: Fetch arbitrary DME model based on node class.
-description: Fetch arbitrary DME model based on node class. 
+description: Fetch arbitrary DME model based on node class.
 version_added: 1.0.0
 options:
   read_class:
@@ -18,7 +17,7 @@ options:
     type: dict
     suboptions:
       entry:
-        description: 
+        description:
           - Add the entry key to get the specific object details.
           - Expects attributes after /api/node/class/{entry}.json
           - Example - ipv4aclACL, l1PhysIf, l2BD, etc.
@@ -33,7 +32,7 @@ options:
     type: dict
     suboptions:
       entry:
-        description: 
+        description:
           - Add the entry key to get the specific mo object details.
           - Expects attributes after /api/mo/{entry}.json
           - Example - sys, sys/intf/phys-[eth1/1], sys/bgp, sys/bd/bd-[vlan-100], etc.
@@ -86,10 +85,10 @@ EXAMPLES = """
     read_dn:
       entry: "sys/intf/phys-[eth1/1]"
       rsp_subtree: "full"
-    
+
 ## Output
 # TASK [Show DME configuration information] ***************************
-# changed: [IAMBATMON] => 
+# changed: [IAMBATMON] =>
 #     changed: true
 #     class:
 #         imdata:

@@ -6,17 +6,16 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 try:
     from ssl import CertificateError
 except ImportError:
     from backports.ssl_match_hostname import CertificateError
 
+import q
 from ansible.module_utils._text import to_text
 from ansible.module_utils.connection import Connection, ConnectionError
 from ansible.module_utils.six import iteritems
-import q
 
 BASE_HEADERS = {
     "Content-Type": "application/json",
@@ -52,7 +51,7 @@ class DmeRequest(object):
         task_vars=None,
     ):
         self.module = module
-        
+
         if module:
             self.connection = Connection(self.module._socket_path)
         elif connection:
@@ -64,7 +63,7 @@ class DmeRequest(object):
                 self.connection.set_options(var_options=task_vars)
             except ConnectionError:
                 raise
-            
+
         if not_rest_data_keys:
             self.not_rest_data_keys = not_rest_data_keys
         else:

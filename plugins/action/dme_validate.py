@@ -8,22 +8,15 @@ The module file for dme_validate module
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 from ansible.module_utils.connection import Connection
 from ansible.plugins.action import ActionBase
-
 from ansible_collections.ansible.utils.plugins.module_utils.common.argspec_validate import (
     AnsibleArgSpecValidator,
 )
-
-from ansible_collections.cisco.dme.plugins.module_utils.dme import (
-    DmeRequest,
-)
-from ansible_collections.cisco.dme.plugins.modules.dme_validate import (
-    DOCUMENTATION,
-)
+from ansible_collections.cisco.dme.plugins.module_utils.dme import DmeRequest
+from ansible_collections.cisco.dme.plugins.modules.dme_validate import DOCUMENTATION
 
 
 class ActionModule(ActionBase):
@@ -39,7 +32,9 @@ class ActionModule(ActionBase):
         lines = []
         for line in config_text.strip().split("\n"):
             line = line.rstrip()
-            if line and not line.strip().startswith("!"):  # Skip empty lines and comments
+            if line and not line.strip().startswith(
+                "!",
+            ):  # Skip empty lines and comments
                 lines.append(line)
         return lines
 
@@ -70,7 +65,6 @@ class ActionModule(ActionBase):
 
         return payloads
 
-
     def configure_module_rpc(self, dme_request, payload):
         code, api_response = dme_request.rpc_get(
             "{0}".format(self.api_object),
@@ -78,23 +72,22 @@ class ActionModule(ActionBase):
         )
         return api_response, code
 
-
     def run(self, tmp=None, task_vars=None):
         self._supports_check_mode = False
         self._result = super(ActionModule, self).run(tmp, task_vars)
-        
+
         self._check_argspec()
-        
+
         self._result["changed"] = False
         if self._result.get("failed"):
             return self._result
-        
+
         conn = Connection(self._connection.socket_path)
         conn_request = DmeRequest(
             connection=conn,
             task_vars=task_vars,
         )
-        
+
         # code, api_response = conn_request.get(
         #     "/api/node/class/ipv4aclACL.json",
         #     data="",
@@ -110,10 +103,10 @@ class ActionModule(ActionBase):
                         else:
                             for conf in self._task.args.get(raw_config, {}):
                                 config_raw += conf + "\n"
-        
+
         config_lines = self.parse_config_block(config_raw)
         payloads = self.config_to_jsonrpc_payload(config_lines)
-        
+
         (
             model_response,
             _,
@@ -121,17 +114,17 @@ class ActionModule(ActionBase):
             conn_request,
             payloads,
         )
-        
+
         self._result["model"] = model_response.get("dme_data", {})
         errorMap = model_response.pop("errors", {})
-        
+
         if errorMap:
             # if "Bad Request" in endpointResponse["error"]:
             config_list = config_raw.split("\n")
             new_err_map = {}
             for idx, cmd in errorMap.items():
                 new_err_map[idx] = config_list[idx]
-                
+
             # self._result["failed"] = True
             self._result["changed"] = True
             self._result["valid"] = False
