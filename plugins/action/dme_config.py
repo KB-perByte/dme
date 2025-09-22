@@ -20,7 +20,12 @@ from ansible_collections.cisco.dme.plugins.modules.dme_config import DOCUMENTATI
 
 
 class ActionModule(ActionBase):
-    """action module"""
+    """
+    Action plugin for dme_config module.
+
+    This action plugin handles DME configuration operations by applying
+    validated DME model data to the target device.
+    """
 
     def __init__(self, *args, **kwargs):
         super(ActionModule, self).__init__(*args, **kwargs)
@@ -41,8 +46,21 @@ class ActionModule(ActionBase):
             self._result["msg"] = errors
 
     def configure_module_api(self, dme_request, payload):
+        """
+        Apply DME configuration to the target device.
+
+        Args:
+            dme_request: DmeRequest instance for making API calls
+            payload: DME model data to apply
+
+        Returns:
+            Tuple of (api_response, changed_status)
+        """
+        if not payload:
+            raise ValueError("Configuration payload is required")
+
         _, api_response = dme_request.post(
-            "{0}".format(self.api_object),
+            self.api_object,
             data=payload,
         )
         return api_response, True

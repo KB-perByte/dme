@@ -16,7 +16,9 @@ version_added: 1.0.0
 """
 
 import base64
+import hashlib
 import json
+import time
 
 from ansible.errors import AnsibleAuthenticationFailure
 from ansible.module_utils.basic import to_bytes, to_text
@@ -80,17 +82,27 @@ class HttpApi(HttpApiBase):
         data=None,
         headers=None,
     ):
-        # TODO
-        secure = False
+        """
+        Send validation request using JSON-RPC protocol.
 
-        # extras
+        Note: This method uses direct requests due to the need for JSON-RPC protocol
+        which is different from the standard REST API. This should be refactored
+        to use Ansible's connection framework when possible.
+        """
         connection_options = self.connection.get_options()
         username = connection_options.get("remote_user")
         password = connection_options.get("password")
+
+        if not username or not password:
+            raise AnsibleAuthenticationFailure("Username and password are required")
+
         credentials = f"{username}:{password}"
         encoded_credentials = base64.b64encode(credentials.encode()).decode()
         self.session_key = encoded_credentials
         self._auth_header = f"Basic {encoded_credentials}"
+
+        # Generate a dynamic CSRF token instead of using hardcoded value
+        csrf_token = hashlib.md5(f"{username}{time.time()}".encode()).hexdigest()[:16]
 
         headers = {
             "Authorization": self._auth_header,
@@ -100,10 +112,9 @@ class HttpApi(HttpApiBase):
             + to_text(self.connection.get_options().get("port")),
             "Origin": self.connection._url,
             "Referer": self.connection._url + "/",
-            "anticsrf": "x45D+4TZAWSJq",
+            "anticsrf": csrf_token,
         }
         params = params if params else {}
-
         data = data if data else {}
 
         if params:
@@ -112,20 +123,32 @@ class HttpApi(HttpApiBase):
                 if params[param] is not None:
                     params_with_val[param] = params[param]
             url = "{0}?{1}".format(url, urlencode(params_with_val))
+
         try:
             self._display_request(request_method)
 
-            # I am not proud of this but this can move to the connection plugin native implementation
+            # TODO: Refactor to use Ansible's connection framework
+            # This direct requests usage should be replaced with proper connection handling
             import requests
+            from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
             session = requests.Session()
-            session.verify = False
+
+            # Respect SSL verification settings from connection options
+            validate_certs = connection_options.get("validate_certs", True)
+            session.verify = validate_certs
+
+            if not validate_certs:
+                # Suppress only the specific warning about unverified HTTPS requests
+                requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
             response_data = session.post(
                 self.connection._url + "/ins",
                 data=to_bytes(json.dumps(data)),
                 headers=headers,
                 timeout=30,
             )
+            response_data.raise_for_status()
 
             error_map = {}
             json_response = response_data.json()
@@ -133,9 +156,14 @@ class HttpApi(HttpApiBase):
                 if json_response[data_idx].get("error"):
                     error_map[data_idx] = ""
 
+        except requests.exceptions.RequestException as e:
+            raise AnsibleAuthenticationFailure(f"Request failed: {str(e)}")
+        except (ValueError, KeyError) as e:
+            raise AnsibleAuthenticationFailure(f"Invalid response format: {str(e)}")
         except HTTPError as e:
             error = json.loads(e.read())
             return e.code, error
+
         return 200, {
             "dme_data": json.loads(json_response[-1]["result"]["msg"]),
             "errors": error_map,

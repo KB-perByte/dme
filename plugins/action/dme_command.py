@@ -20,7 +20,14 @@ from ansible_collections.cisco.dme.plugins.modules.dme_command import DOCUMENTAT
 
 
 class ActionModule(ActionBase):
-    """action module"""
+    """
+    Action plugin for dme_command module.
+
+    This action plugin handles DME command operations including:
+    - Fetching DME class objects
+    - Retrieving managed object data by distinguished name
+    - Building appropriate API URLs with query parameters
+    """
 
     def __init__(self, *args, **kwargs):
         super(ActionModule, self).__init__(*args, **kwargs)
@@ -44,7 +51,20 @@ class ActionModule(ActionBase):
             self._result["msg"] = errors
 
     def configure_class_api(self, dme_request, read_class):
+        """
+        Configure and execute DME class-based API request.
+
+        Args:
+            dme_request: DmeRequest instance for making API calls
+            read_class: Dictionary containing class query parameters
+
+        Returns:
+            Tuple of (api_response, code)
+        """
         payload = read_class.get("entry")
+        if not payload:
+            raise ValueError("Class entry is required for class-based queries")
+
         self.api_object = f"/api/node/class/{payload}.json"
 
         if read_class.get("rsp_prop_include"):
@@ -57,25 +77,41 @@ class ActionModule(ActionBase):
         return api_response, code
 
     def configure_mo_api(self, dme_request, read_dn):
+        """
+        Configure and execute DME managed object API request.
+
+        Args:
+            dme_request: DmeRequest instance for making API calls
+            read_dn: Dictionary containing distinguished name query parameters
+
+        Returns:
+            Tuple of (api_response, code)
+        """
         payload = read_dn.get("entry")
+        if not payload:
+            raise ValueError("DN entry is required for managed object queries")
+
         self.api_object = f"/api/mo/{payload}.json"
 
-        qt = False
+        # Build query parameters properly
+        query_params = []
+
         if read_dn.get("rsp_prop_include"):
-            self.api_object = (
-                f"{self.api_object}?rsp-prop-include={read_dn.get('rsp_prop_include')}"
-            )
+            query_params.append(f"rsp-prop-include={read_dn.get('rsp_prop_include')}")
+
         if read_dn.get("rsp_subtree"):
-            self.api_object = (
-                f"{self.api_object}?rsp-subtree={read_dn.get('rsp_subtree')}"
-            )
+            query_params.append(f"rsp-subtree={read_dn.get('rsp_subtree')}")
+
         if read_dn.get("query_target"):
-            self.api_object = (
-                f"{self.api_object}?query-target={read_dn.get('query_target')}"
-            )
-            qt = True
+            query_params.append(f"query-target={read_dn.get('query_target')}")
+
         if read_dn.get("target_subtree_class"):
-            self.api_object = f"{self.api_object}{'&' if qt else '?'}target-subtree-class={read_dn.get('target_subtree_class')}"
+            query_params.append(
+                f"target-subtree-class={read_dn.get('target_subtree_class')}",
+            )
+
+        if query_params:
+            self.api_object = f"{self.api_object}?{'&'.join(query_params)}"
 
         code, api_response = dme_request.get(
             self.api_object,

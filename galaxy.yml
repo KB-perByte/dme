@@ -10,10 +10,9 @@ readme: README.md
 authors:
   - Sagar Paul (@KB-perByte)
 
-description: An Ansible Collection to manage Cisco applainces supporting Data Management Engine (DME).
+description: An Ansible Collection to manage Cisco appliances supporting Data Management Engine (DME).
 license_file: LICENSE
 
-# TO-DO: update the tags based on your content type
 tags: ["cisco", "nxos", "dme", "httpapi", "networking", "ansible"]
 
 repository: https://github.com/KB-perByte/dme

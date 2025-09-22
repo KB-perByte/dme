@@ -12,7 +12,7 @@
     - name: Config validation on box with direct configuration
       cisco.dme.dme_validate:
         lines:
-          - description An good description for this demo
+          - description A good description for this demo
         parents: interface Ethernet1/2
       register: result_validation
 

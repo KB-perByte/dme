@@ -20,7 +20,13 @@ from ansible_collections.cisco.dme.plugins.modules.dme_validate import DOCUMENTA
 
 
 class ActionModule(ActionBase):
-    """action module"""
+    """
+    Action plugin for dme_validate module.
+
+    This action plugin handles DME validation operations by converting
+    traditional CLI configuration commands to DME model format and
+    validating them against the target device.
+    """
 
     def __init__(self, *args, **kwargs):
         super(ActionModule, self).__init__(*args, **kwargs)
@@ -29,6 +35,18 @@ class ActionModule(ActionBase):
         self.api_object = "/ins"
 
     def parse_config_block(self, config_text):
+        """
+        Parse configuration text into individual lines.
+
+        Args:
+            config_text: Raw configuration text to parse
+
+        Returns:
+            List of configuration lines (excluding empty lines and comments)
+        """
+        if not config_text:
+            return []
+
         lines = []
         for line in config_text.strip().split("\n"):
             line = line.rstrip()
@@ -51,9 +69,24 @@ class ActionModule(ActionBase):
             self._result["msg"] = errors
 
     def config_to_jsonrpc_payload(self, config_lines, start_id=1):
-        payloads = []
+        """
+        Convert configuration lines to JSON-RPC payload format.
 
+        Args:
+            config_lines: List of configuration command lines
+            start_id: Starting ID for JSON-RPC requests
+
+        Returns:
+            List of JSON-RPC formatted payloads
+        """
+        if not config_lines:
+            return []
+
+        payloads = []
         for i, cmd in enumerate(config_lines):
+            if not cmd.strip():  # Skip empty commands
+                continue
+
             payload = {
                 "jsonrpc": "2.0",
                 "method": "cli_rest",
@@ -66,8 +99,21 @@ class ActionModule(ActionBase):
         return payloads
 
     def configure_module_rpc(self, dme_request, payload):
+        """
+        Execute JSON-RPC validation request.
+
+        Args:
+            dme_request: DmeRequest instance for making RPC calls
+            payload: JSON-RPC formatted payload
+
+        Returns:
+            Tuple of (api_response, code)
+        """
+        if not payload:
+            raise ValueError("RPC payload is required for validation")
+
         code, api_response = dme_request.rpc_get(
-            "{0}".format(self.api_object),
+            self.api_object,
             data=payload,
         )
         return api_response, code
