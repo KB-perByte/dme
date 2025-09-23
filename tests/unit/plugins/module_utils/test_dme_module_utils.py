@@ -5,14 +5,12 @@
 
 """Unit tests for module_utils.dme module."""
 
-import pytest
-from unittest.mock import MagicMock, patch, Mock
-from ansible.module_utils.connection import ConnectionError
+from unittest.mock import MagicMock, patch
 
 from ansible_collections.cisco.dme.plugins.module_utils.dme import (
-    find_dict_in_list,
-    DmeRequest,
     BASE_HEADERS,
+    DmeRequest,
+    find_dict_in_list,
 )
 
 
@@ -99,7 +97,7 @@ class TestDmeRequest:
     def test_init_with_module(self, mock_module):
         """Test DmeRequest initialization with module."""
         with patch(
-            "ansible_collections.cisco.dme.plugins.module_utils.dme.Connection"
+            "ansible_collections.cisco.dme.plugins.module_utils.dme.Connection",
         ) as mock_conn_class:
             mock_connection = MagicMock()
             mock_conn_class.return_value = mock_connection

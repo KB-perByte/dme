@@ -4,7 +4,6 @@ Test structure verification script for Cisco DME Collection.
 This script verifies that all test files have unique names and can be imported without conflicts.
 """
 
-import os
 import sys
 from pathlib import Path
 

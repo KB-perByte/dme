@@ -1,6 +1,7 @@
 # Pytest Import Conflict Fix
 
 ## Problem
+
 The original test structure had naming conflicts that caused pytest to fail with "import file mismatch" errors:
 
 ```
@@ -13,12 +14,15 @@ which is not the same as the test file we want to collect:
 ```
 
 ## Root Cause
+
 Multiple test files had the same basename (`test_dme.py`) in different directories, causing Python's import system to cache the first imported module and reject subsequent imports with the same name.
 
 ## Solution
+
 Renamed all test files to have unique basenames that clearly indicate their purpose:
 
 ### Before (Conflicting Names)
+
 ```
 tests/unit/plugins/
 ├── action/
@@ -36,6 +40,7 @@ tests/unit/plugins/
 ```
 
 ### After (Unique Names)
+
 ```
 tests/unit/plugins/
 ├── action/
@@ -53,6 +58,7 @@ tests/unit/plugins/
 ```
 
 ## Verification
+
 Created `tests/verify_test_structure.py` script to automatically check for naming conflicts:
 
 ```bash
@@ -62,6 +68,7 @@ $ python3 tests/verify_test_structure.py
 ```
 
 ## Prevention
+
 1. **Unique Naming Convention**: All test files now follow the pattern `test_{component}_{type}.py`
 2. **Verification Script**: Automated check prevents future conflicts
 3. **Updated Documentation**: README and scripts updated with new file names
@@ -84,6 +91,7 @@ pytest tests/unit/ -v
 ```
 
 ## Benefits
+
 - ✅ No more import conflicts
 - ✅ Clear test file organization
 - ✅ Automated verification

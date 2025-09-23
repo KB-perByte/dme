@@ -14,16 +14,16 @@ MOCK_LOGIN_RESPONSE = {
                     "token": "test-token-12345",
                     "sessionId": "test-session-id",
                     "userName": "admin",
-                    "siteFingerprint": "test-fingerprint"
-                }
-            }
-        }
-    ]
+                    "siteFingerprint": "test-fingerprint",
+                },
+            },
+        },
+    ],
 }
 
 # Mock logout response
 MOCK_LOGOUT_RESPONSE = {
-    "imdata": []
+    "imdata": [],
 }
 
 # Mock class query response (for dme_command)
@@ -37,9 +37,9 @@ MOCK_CLASS_RESPONSE = {
                     "ignRoutable": "no",
                     "name": "ACL1v4",
                     "perACEStatistics": "off",
-                    "udfPresent": "no"
-                }
-            }
+                    "udfPresent": "no",
+                },
+            },
         },
         {
             "ipv4aclACL": {
@@ -49,12 +49,12 @@ MOCK_CLASS_RESPONSE = {
                     "ignRoutable": "no",
                     "name": "ACL2v4",
                     "perACEStatistics": "off",
-                    "udfPresent": "no"
-                }
-            }
-        }
+                    "udfPresent": "no",
+                },
+            },
+        },
     ],
-    "totalCount": "2"
+    "totalCount": "2",
 }
 
 # Mock managed object response (for dme_command)
@@ -77,7 +77,7 @@ MOCK_MO_RESPONSE = {
                     "id": "eth1/1",
                     "layer": "Layer2",
                     "mtu": "1500",
-                    "speed": "auto"
+                    "speed": "auto",
                 },
                 "children": [
                     {
@@ -85,15 +85,15 @@ MOCK_MO_RESPONSE = {
                             "attributes": {
                                 "broadcastPkts": "100",
                                 "octets": "1000000",
-                                "pkts": "500"
-                            }
-                        }
-                    }
-                ]
-            }
-        }
+                                "pkts": "500",
+                            },
+                        },
+                    },
+                ],
+            },
+        },
     ],
-    "totalCount": "1"
+    "totalCount": "1",
 }
 
 # Mock validation response (for dme_validate)
@@ -108,17 +108,17 @@ MOCK_VALIDATION_SUCCESS_RESPONSE = {
                                 "l1PhysIf": {
                                     "attributes": {
                                         "descr": "Test description",
-                                        "id": "eth1/2"
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
+                                        "id": "eth1/2",
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
     },
-    "errors": {}
+    "errors": {},
 }
 
 MOCK_VALIDATION_ERROR_RESPONSE = {
@@ -131,24 +131,24 @@ MOCK_VALIDATION_ERROR_RESPONSE = {
                             {
                                 "l1PhysIf": {
                                     "attributes": {
-                                        "id": "eth1/2"
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
+                                        "id": "eth1/2",
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
     },
     "errors": {
-        0: "Invalid command: idescription"
-    }
+        0: "Invalid command: idescription",
+    },
 }
 
 # Mock configuration response (for dme_config)
 MOCK_CONFIG_SUCCESS_RESPONSE = {
-    "imdata": []
+    "imdata": [],
 }
 
 # Mock JSON-RPC responses for validation
@@ -156,10 +156,10 @@ MOCK_JSONRPC_SUCCESS_RESPONSE = [
     {
         "jsonrpc": "2.0",
         "result": {
-            "msg": '{"topSystem": {"children": [{"interfaceEntity": {"children": [{"l1PhysIf": {"attributes": {"descr": "Test description", "id": "eth1/2"}}}]}}]}}'
+            "msg": '{"topSystem": {"children": [{"interfaceEntity": {"children": [{"l1PhysIf": {"attributes": {"descr": "Test description", "id": "eth1/2"}}}]}}]}}',
         },
-        "id": 1
-    }
+        "id": 1,
+    },
 ]
 
 MOCK_JSONRPC_ERROR_RESPONSE = [
@@ -167,23 +167,23 @@ MOCK_JSONRPC_ERROR_RESPONSE = [
         "jsonrpc": "2.0",
         "error": {
             "code": -32600,
-            "message": "Invalid Request"
+            "message": "Invalid Request",
         },
-        "id": 1
-    }
+        "id": 1,
+    },
 ]
 
 # Error responses
 MOCK_AUTH_ERROR_RESPONSE = {
     "error": {
         "code": "401",
-        "message": "Authentication failed"
-    }
+        "message": "Authentication failed",
+    },
 }
 
 MOCK_HTTP_ERROR_RESPONSE = {
     "error": {
         "code": "400",
-        "message": "Bad Request"
-    }
+        "message": "Bad Request",
+    },
 }

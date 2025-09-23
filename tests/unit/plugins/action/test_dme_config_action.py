@@ -5,10 +5,10 @@
 
 """Unit tests for action.dme_config plugin."""
 
-import pytest
 from unittest.mock import MagicMock, patch
-from ansible.plugins.action import ActionBase
 
+import pytest
+from ansible.plugins.action import ActionBase
 from ansible_collections.cisco.dme.plugins.action.dme_config import ActionModule
 from ansible_collections.cisco.dme.tests.unit.fixtures.dme_responses import (
     MOCK_CONFIG_SUCCESS_RESPONSE,
@@ -54,20 +54,20 @@ class TestDmeConfigAction:
                                             "attributes": {
                                                 "descr": "Test description",
                                                 "id": "eth1/2",
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                }
-            }
+                                            },
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            },
         }
         action_module._result = {}
 
         with patch(
-            "ansible_collections.cisco.dme.plugins.action.dme_config.AnsibleArgSpecValidator"
+            "ansible_collections.cisco.dme.plugins.action.dme_config.AnsibleArgSpecValidator",
         ) as mock_validator:
             mock_validator.return_value.validate.return_value = (
                 True,
@@ -85,7 +85,7 @@ class TestDmeConfigAction:
         action_module._result = {}
 
         with patch(
-            "ansible_collections.cisco.dme.plugins.action.dme_config.AnsibleArgSpecValidator"
+            "ansible_collections.cisco.dme.plugins.action.dme_config.AnsibleArgSpecValidator",
         ) as mock_validator:
             mock_validator.return_value.validate.return_value = (
                 False,
@@ -97,7 +97,7 @@ class TestDmeConfigAction:
 
             assert action_module._result["failed"] is True
             assert action_module._result["msg"] == [
-                "Missing required parameter: config"
+                "Missing required parameter: config",
             ]
 
     def test_configure_module_api_success(self, action_module):
@@ -116,24 +116,26 @@ class TestDmeConfigAction:
                                         "attributes": {
                                             "descr": "Test description",
                                             "id": "eth1/2",
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                ],
+            },
         }
 
         api_response, changed = action_module.configure_module_api(
-            mock_dme_request, payload
+            mock_dme_request,
+            payload,
         )
 
         assert api_response == MOCK_CONFIG_SUCCESS_RESPONSE
         assert changed is True
         mock_dme_request.post.assert_called_once_with(
-            action_module.api_object, data=payload
+            action_module.api_object,
+            data=payload,
         )
 
     def test_configure_module_api_empty_payload(self, action_module):
@@ -153,7 +155,10 @@ class TestDmeConfigAction:
     @patch("ansible_collections.cisco.dme.plugins.action.dme_config.Connection")
     @patch("ansible_collections.cisco.dme.plugins.action.dme_config.DmeRequest")
     def test_run_success(
-        self, mock_dme_request_class, mock_connection_class, action_module
+        self,
+        mock_dme_request_class,
+        mock_connection_class,
+        action_module,
     ):
         """Test successful run method execution."""
         # Setup mocks
@@ -176,14 +181,14 @@ class TestDmeConfigAction:
                                         "attributes": {
                                             "descr": "Test description",
                                             "id": "eth1/2",
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                ],
+            },
         }
         action_module._task.args = {"config": config_payload}
 
@@ -199,16 +204,21 @@ class TestDmeConfigAction:
 
         # Verify DmeRequest was created properly
         mock_dme_request_class.assert_called_once_with(
-            connection=mock_connection, task_vars={"test": "vars"}
+            connection=mock_connection,
+            task_vars={"test": "vars"},
         )
         mock_dme_request.post.assert_called_once_with(
-            "/api/mo/sys.json", data=config_payload
+            "/api/mo/sys.json",
+            data=config_payload,
         )
 
     @patch("ansible_collections.cisco.dme.plugins.action.dme_config.Connection")
     @patch("ansible_collections.cisco.dme.plugins.action.dme_config.DmeRequest")
     def test_run_no_config(
-        self, mock_dme_request_class, mock_connection_class, action_module
+        self,
+        mock_dme_request_class,
+        mock_connection_class,
+        action_module,
     ):
         """Test run method without config parameter."""
         # Setup mocks
@@ -234,7 +244,10 @@ class TestDmeConfigAction:
     @patch("ansible_collections.cisco.dme.plugins.action.dme_config.Connection")
     @patch("ansible_collections.cisco.dme.plugins.action.dme_config.DmeRequest")
     def test_run_with_argspec_failure(
-        self, mock_dme_request_class, mock_connection_class, action_module
+        self,
+        mock_dme_request_class,
+        mock_connection_class,
+        action_module,
     ):
         """Test run method when argument specification validation fails."""
         action_module._task.args = {"invalid": "args"}
@@ -243,7 +256,9 @@ class TestDmeConfigAction:
         with patch.object(ActionBase, "run", return_value={}):
             with patch.object(action_module, "_check_argspec") as mock_check:
                 mock_check.side_effect = lambda: setattr(
-                    action_module, "_result", {"failed": True, "msg": "Invalid args"}
+                    action_module,
+                    "_result",
+                    {"failed": True, "msg": "Invalid args"},
                 )
 
                 result = action_module.run()
@@ -268,7 +283,10 @@ class TestDmeConfigAction:
     @patch("ansible_collections.cisco.dme.plugins.action.dme_config.Connection")
     @patch("ansible_collections.cisco.dme.plugins.action.dme_config.DmeRequest")
     def test_run_with_complex_config(
-        self, mock_dme_request_class, mock_connection_class, action_module
+        self,
+        mock_dme_request_class,
+        mock_connection_class,
+        action_module,
     ):
         """Test run method with complex configuration payload."""
         # Setup mocks
@@ -294,8 +312,8 @@ class TestDmeConfigAction:
                                             "adminSt": "up",
                                             "speed": "10000",
                                             "mtu": "9000",
-                                        }
-                                    }
+                                        },
+                                    },
                                 },
                                 {
                                     "l1PhysIf": {
@@ -303,11 +321,11 @@ class TestDmeConfigAction:
                                             "descr": "Another test interface",
                                             "id": "eth1/2",
                                             "adminSt": "down",
-                                        }
-                                    }
+                                        },
+                                    },
                                 },
-                            ]
-                        }
+                            ],
+                        },
                     },
                     {
                         "bgpEntity": {
@@ -317,14 +335,14 @@ class TestDmeConfigAction:
                                         "attributes": {
                                             "adminSt": "enabled",
                                             "asn": "65001",
-                                        }
-                                    }
-                                }
-                            ]
-                        }
+                                        },
+                                    },
+                                },
+                            ],
+                        },
                     },
-                ]
-            }
+                ],
+            },
         }
 
         action_module._task.args = {"config": complex_config}
@@ -337,7 +355,8 @@ class TestDmeConfigAction:
         # Verify the complex config was passed correctly
         assert result["changed"] is True
         mock_dme_request.post.assert_called_once_with(
-            "/api/mo/sys.json", data=complex_config
+            "/api/mo/sys.json",
+            data=complex_config,
         )
 
     def test_configure_module_api_with_list_payload(self, action_module):
@@ -358,23 +377,25 @@ class TestDmeConfigAction:
                                             "attributes": {
                                                 "descr": "Test description",
                                                 "id": "eth1/2",
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                }
-            }
+                                            },
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            },
         ]
 
         api_response, changed = action_module.configure_module_api(
-            mock_dme_request, payload
+            mock_dme_request,
+            payload,
         )
 
         assert api_response == MOCK_CONFIG_SUCCESS_RESPONSE
         assert changed is True
         mock_dme_request.post.assert_called_once_with(
-            action_module.api_object, data=payload
+            action_module.api_object,
+            data=payload,
         )

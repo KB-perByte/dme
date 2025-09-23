@@ -13,7 +13,7 @@
   register: result_valid
 
 - name: Verify valid configuration result
-  assert:
+  ansible.builtin.assert:
     that:
       - result_valid is changed
       - result_valid.valid is true
@@ -32,7 +32,7 @@
   ignore_errors: true
 
 - name: Verify invalid configuration handling
-  assert:
+  ansible.builtin.assert:
     that:
       - result_invalid is changed
       - result_invalid.valid is false
@@ -52,7 +52,7 @@
   register: result_complex
 
 - name: Verify complex configuration result
-  assert:
+  ansible.builtin.assert:
     that:
       - result_complex is changed
       - result_complex.model is defined
@@ -65,7 +65,7 @@
   register: result_string
 
 - name: Verify string input handling
-  assert:
+  ansible.builtin.assert:
     that:
       - result_string is changed
       - result_string.model is defined
@@ -80,7 +80,7 @@
   register: result_multi_parent
 
 - name: Verify multi-parent configuration
-  assert:
+  ansible.builtin.assert:
     that:
       - result_multi_parent is changed
       - result_multi_parent.model is defined
@@ -93,7 +93,7 @@
   register: result_no_parents
 
 - name: Verify configuration without parents
-  assert:
+  ansible.builtin.assert:
     that:
       - result_no_parents is changed
       - result_no_parents.model is defined
@@ -110,7 +110,7 @@
   ignore_errors: true
 
 - name: Verify error mapping functionality
-  assert:
+  ansible.builtin.assert:
     that:
       - result_error_mapping is changed
       - result_error_mapping.model is defined
@@ -127,7 +127,7 @@
   register: result_acl
 
 - name: Verify ACL configuration validation
-  assert:
+  ansible.builtin.assert:
     that:
       - result_acl is changed
       - result_acl.model is defined

@@ -118,7 +118,6 @@ known_issues:
    ```
 
 3. **Review generated files**:
-
    - `CHANGELOG.md` - Markdown format for GitHub
    - `CHANGELOG.rst` - ReStructuredText format for docs
    - `changelogs/changelog.yaml` - Machine-readable changelog data

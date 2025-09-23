@@ -7,15 +7,17 @@
 
 import json
 from unittest.mock import MagicMock, Mock
+
 import pytest
 from ansible.module_utils.connection import Connection
+
 from .fixtures.dme_responses import (
+    MOCK_CLASS_RESPONSE,
+    MOCK_CONFIG_SUCCESS_RESPONSE,
     MOCK_LOGIN_RESPONSE,
     MOCK_LOGOUT_RESPONSE,
-    MOCK_CLASS_RESPONSE,
     MOCK_MO_RESPONSE,
     MOCK_VALIDATION_SUCCESS_RESPONSE,
-    MOCK_CONFIG_SUCCESS_RESPONSE,
 )
 
 
@@ -92,7 +94,7 @@ def mock_ansible_env(monkeypatch):
             "jsonrpc": "2.0",
             "result": {"msg": json.dumps(MOCK_VALIDATION_SUCCESS_RESPONSE["dme_data"])},
             "id": 1,
-        }
+        },
     ]
     mock_session.post.return_value = mock_response
     mock_requests.Session.return_value = mock_session

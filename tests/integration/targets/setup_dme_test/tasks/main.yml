@@ -4,7 +4,7 @@
 # GNU General Public License v3.0+
 
 - name: Set up test environment variables
-  set_fact:
+  ansible.builtin.set_fact:
     dme_test_device: "{{ ansible_host | default('localhost') }}"
     dme_test_user: "{{ ansible_user | default('admin') }}"
     dme_test_password: "{{ ansible_password | default('admin') }}"
@@ -12,18 +12,18 @@
 - name: Verify DME connection is available
   cisco.dme.dme_command:
     read_class:
-      entry: 'topSystem'
+      entry: "topSystem"
   register: connection_test
   ignore_errors: true
 
 - name: Skip tests if DME connection is not available
-  meta: end_play
+  ansible.builtin.meta: end_play
   when: connection_test is failed
 
 - name: Display test environment info
-  debug:
+  ansible.builtin.debug:
     msg:
-      - 'Running DME integration tests'
-      - 'Device: {{ dme_test_device }}'
-      - 'Connection: {{ ansible_connection }}'
-      - 'Network OS: {{ ansible_network_os }}'
+      - "Running DME integration tests"
+      - "Device: {{ dme_test_device }}"
+      - "Connection: {{ ansible_connection }}"
+      - "Network OS: {{ ansible_network_os }}"

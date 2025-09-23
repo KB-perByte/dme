@@ -5,10 +5,10 @@
 
 """Unit tests for action.dme_command plugin."""
 
-import pytest
-from unittest.mock import MagicMock, patch, Mock
-from ansible.plugins.action import ActionBase
+from unittest.mock import MagicMock, patch
 
+import pytest
+from ansible.plugins.action import ActionBase
 from ansible_collections.cisco.dme.plugins.action.dme_command import ActionModule
 from ansible_collections.cisco.dme.tests.unit.fixtures.dme_responses import (
     MOCK_CLASS_RESPONSE,
@@ -50,7 +50,7 @@ class TestDmeCommandAction:
         action_module._result = {}
 
         with patch(
-            "ansible_collections.cisco.dme.plugins.action.dme_command.AnsibleArgSpecValidator"
+            "ansible_collections.cisco.dme.plugins.action.dme_command.AnsibleArgSpecValidator",
         ) as mock_validator:
             mock_validator.return_value.validate.return_value = (
                 True,
@@ -68,7 +68,7 @@ class TestDmeCommandAction:
         action_module._result = {}
 
         with patch(
-            "ansible_collections.cisco.dme.plugins.action.dme_command.AnsibleArgSpecValidator"
+            "ansible_collections.cisco.dme.plugins.action.dme_command.AnsibleArgSpecValidator",
         ) as mock_validator:
             mock_validator.return_value.validate.return_value = (
                 False,
@@ -89,7 +89,8 @@ class TestDmeCommandAction:
         read_class = {"entry": "ipv4aclACL", "rsp_prop_include": "config-only"}
 
         api_response, code = action_module.configure_class_api(
-            mock_dme_request, read_class
+            mock_dme_request,
+            read_class,
         )
 
         assert api_response == MOCK_CLASS_RESPONSE
@@ -108,7 +109,8 @@ class TestDmeCommandAction:
         read_class = {"entry": "ipv4aclACL"}
 
         api_response, code = action_module.configure_class_api(
-            mock_dme_request, read_class
+            mock_dme_request,
+            read_class,
         )
 
         assert api_response == MOCK_CLASS_RESPONSE
@@ -182,7 +184,10 @@ class TestDmeCommandAction:
     @patch("ansible_collections.cisco.dme.plugins.action.dme_command.Connection")
     @patch("ansible_collections.cisco.dme.plugins.action.dme_command.DmeRequest")
     def test_run_with_read_class(
-        self, mock_dme_request_class, mock_connection_class, action_module
+        self,
+        mock_dme_request_class,
+        mock_connection_class,
+        action_module,
     ):
         """Test run method with read_class parameter."""
         # Setup mocks
@@ -195,7 +200,7 @@ class TestDmeCommandAction:
 
         # Setup task args
         action_module._task.args = {
-            "read_class": {"entry": "ipv4aclACL", "rsp_prop_include": "config-only"}
+            "read_class": {"entry": "ipv4aclACL", "rsp_prop_include": "config-only"},
         }
 
         # Mock parent run method
@@ -210,13 +215,17 @@ class TestDmeCommandAction:
 
         # Verify DmeRequest was created properly
         mock_dme_request_class.assert_called_once_with(
-            connection=mock_connection, task_vars={"test": "vars"}
+            connection=mock_connection,
+            task_vars={"test": "vars"},
         )
 
     @patch("ansible_collections.cisco.dme.plugins.action.dme_command.Connection")
     @patch("ansible_collections.cisco.dme.plugins.action.dme_command.DmeRequest")
     def test_run_with_read_dn(
-        self, mock_dme_request_class, mock_connection_class, action_module
+        self,
+        mock_dme_request_class,
+        mock_connection_class,
+        action_module,
     ):
         """Test run method with read_dn parameter."""
         # Setup mocks
@@ -229,7 +238,7 @@ class TestDmeCommandAction:
 
         # Setup task args
         action_module._task.args = {
-            "read_dn": {"entry": "sys/intf/phys-[eth1/1]", "rsp_subtree": "full"}
+            "read_dn": {"entry": "sys/intf/phys-[eth1/1]", "rsp_subtree": "full"},
         }
 
         # Mock parent run method
@@ -245,7 +254,10 @@ class TestDmeCommandAction:
     @patch("ansible_collections.cisco.dme.plugins.action.dme_command.Connection")
     @patch("ansible_collections.cisco.dme.plugins.action.dme_command.DmeRequest")
     def test_run_with_both_parameters(
-        self, mock_dme_request_class, mock_connection_class, action_module
+        self,
+        mock_dme_request_class,
+        mock_connection_class,
+        action_module,
     ):
         """Test run method with both read_class and read_dn parameters."""
         # Setup mocks
@@ -278,7 +290,10 @@ class TestDmeCommandAction:
     @patch("ansible_collections.cisco.dme.plugins.action.dme_command.Connection")
     @patch("ansible_collections.cisco.dme.plugins.action.dme_command.DmeRequest")
     def test_run_with_argspec_failure(
-        self, mock_dme_request_class, mock_connection_class, action_module
+        self,
+        mock_dme_request_class,
+        mock_connection_class,
+        action_module,
     ):
         """Test run method when argument specification validation fails."""
         action_module._task.args = {"invalid": "args"}
@@ -287,7 +302,9 @@ class TestDmeCommandAction:
         with patch.object(ActionBase, "run", return_value={}):
             with patch.object(action_module, "_check_argspec") as mock_check:
                 mock_check.side_effect = lambda: setattr(
-                    action_module, "_result", {"failed": True, "msg": "Invalid args"}
+                    action_module,
+                    "_result",
+                    {"failed": True, "msg": "Invalid args"},
                 )
 
                 result = action_module.run()

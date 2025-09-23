@@ -3,6 +3,7 @@
 ## Quick Start
 
 ### Run Unit Tests
+
 ```bash
 # Install test dependencies
 pip install -r tests/requirements.txt
@@ -15,6 +16,7 @@ pytest tests/unit/ --cov=plugins --cov-report=html
 ```
 
 ### Run Integration Tests
+
 ```bash
 # Update inventory with your device details
 cp tests/integration/inventory.ini.example tests/integration/inventory.ini
@@ -25,6 +27,7 @@ ansible-test integration --inventory tests/integration/inventory.ini
 ```
 
 ### Use Test Runner Script
+
 ```bash
 # Run unit tests only (default)
 ./tests/run_tests.sh

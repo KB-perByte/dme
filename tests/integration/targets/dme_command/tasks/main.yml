@@ -11,7 +11,7 @@
   register: result_class
 
 - name: Verify read_class result structure
-  assert:
+  ansible.builtin.assert:
     that:
       - result_class is changed
       - result_class.class is defined
@@ -27,7 +27,7 @@
   register: result_dn
 
 - name: Verify read_dn result structure
-  assert:
+  ansible.builtin.assert:
     that:
       - result_dn is changed
       - result_dn.mo is defined
@@ -44,7 +44,7 @@
   register: result_both
 
 - name: Verify both results are present
-  assert:
+  ansible.builtin.assert:
     that:
       - result_both is changed
       - result_both.class is defined
@@ -61,7 +61,7 @@
   register: result_query_target
 
 - name: Verify query_target result
-  assert:
+  ansible.builtin.assert:
     that:
       - result_query_target is changed
       - result_query_target.mo is defined
@@ -74,7 +74,7 @@
   ignore_errors: true
 
 - name: Verify error handling
-  assert:
+  ansible.builtin.assert:
     that:
       - result_invalid is failed or (result_invalid.class.imdata | length == 0)
 
@@ -85,7 +85,7 @@
   register: result_minimal
 
 - name: Verify minimal parameters work
-  assert:
+  ansible.builtin.assert:
     that:
       - result_minimal is changed
       - result_minimal.class is defined

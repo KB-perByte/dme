@@ -18,7 +18,7 @@
   when: validation_result.valid
 
 - name: Verify config application result
-  assert:
+  ansible.builtin.assert:
     that:
       - config_result is changed
       - config_result.dme_response is defined
@@ -42,7 +42,7 @@
       when: shutdown_validation.valid
 
     - name: Verify shutdown configuration applied
-      assert:
+      ansible.builtin.assert:
         that:
           - shutdown_config is changed
           - shutdown_config.dme_response is defined
@@ -67,7 +67,7 @@
       when: vlan_validation.valid
 
     - name: Verify VLAN configuration applied
-      assert:
+      ansible.builtin.assert:
         that:
           - vlan_config is changed
           - vlan_config.dme_response is defined
@@ -106,7 +106,7 @@
       when: multi_validation_2.valid
 
     - name: Verify both configurations applied
-      assert:
+      ansible.builtin.assert:
         that:
           - multi_config_1 is changed
           - multi_config_2 is changed
@@ -132,7 +132,7 @@
       when: bgp_validation.valid is defined and bgp_validation.valid
 
     - name: Verify BGP configuration if applied
-      assert:
+      ansible.builtin.assert:
         that:
           - bgp_config is changed
           - bgp_config.dme_response is defined
@@ -145,7 +145,7 @@
   ignore_errors: true
 
 - name: Verify empty config handling
-  assert:
+  ansible.builtin.assert:
     that:
       - empty_config_result is failed
 
@@ -172,7 +172,7 @@
       when: idempotency_validation.valid
 
     - name: Verify both applications succeeded
-      assert:
+      ansible.builtin.assert:
         that:
           - first_apply is changed
           - second_apply is changed

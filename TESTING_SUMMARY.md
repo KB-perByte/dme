@@ -58,13 +58,11 @@ tests/
 ### Unit Tests
 
 - **Action Plugins**: 95%+ coverage
-
   - Comprehensive testing of all three action plugins
   - Argument validation, API calls, error handling
   - Mock-based testing with realistic scenarios
 
 - **HttpApi Plugin**: 90%+ coverage
-
   - Authentication flows (login/logout)
   - Request/response handling
   - SSL/TLS configuration
@@ -72,7 +70,6 @@ tests/
   - Error handling and edge cases
 
 - **Module Utils**: 95%+ coverage
-
   - Utility functions testing
   - Connection handling
   - Error management
@@ -86,14 +83,12 @@ tests/
 ### Integration Tests
 
 - **dme_command**: Complete workflow testing
-
   - Class-based queries (`read_class`)
   - DN-based queries (`read_dn`)
   - Parameter combinations
   - Error scenarios
 
 - **dme_validate**: Configuration validation
-
   - Valid and invalid configurations
   - Error mapping functionality
   - Complex multi-line configurations

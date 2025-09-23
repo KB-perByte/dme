@@ -5,14 +5,14 @@
 
 """Unit tests for action.dme_validate plugin."""
 
-import pytest
 from unittest.mock import MagicMock, patch
-from ansible.plugins.action import ActionBase
 
+import pytest
+from ansible.plugins.action import ActionBase
 from ansible_collections.cisco.dme.plugins.action.dme_validate import ActionModule
 from ansible_collections.cisco.dme.tests.unit.fixtures.dme_responses import (
-    MOCK_VALIDATION_SUCCESS_RESPONSE,
     MOCK_VALIDATION_ERROR_RESPONSE,
+    MOCK_VALIDATION_SUCCESS_RESPONSE,
 )
 
 
@@ -197,17 +197,19 @@ no shutdown
                 "method": "cli_rest",
                 "params": {"cmd": "show version"},
                 "id": 1,
-            }
+            },
         ]
 
         api_response, code = action_module.configure_module_rpc(
-            mock_dme_request, payload
+            mock_dme_request,
+            payload,
         )
 
         assert api_response == MOCK_VALIDATION_SUCCESS_RESPONSE
         assert code == 200
         mock_dme_request.rpc_get.assert_called_once_with(
-            action_module.api_object, data=payload
+            action_module.api_object,
+            data=payload,
         )
 
     def test_configure_module_rpc_empty_payload(self, action_module):
@@ -220,7 +222,10 @@ no shutdown
     @patch("ansible_collections.cisco.dme.plugins.action.dme_validate.Connection")
     @patch("ansible_collections.cisco.dme.plugins.action.dme_validate.DmeRequest")
     def test_run_with_lines_success(
-        self, mock_dme_request_class, mock_connection_class, action_module
+        self,
+        mock_dme_request_class,
+        mock_connection_class,
+        action_module,
     ):
         """Test successful run with lines parameter."""
         # Setup mocks
@@ -251,7 +256,10 @@ no shutdown
     @patch("ansible_collections.cisco.dme.plugins.action.dme_validate.Connection")
     @patch("ansible_collections.cisco.dme.plugins.action.dme_validate.DmeRequest")
     def test_run_with_validation_errors(
-        self, mock_dme_request_class, mock_connection_class, action_module
+        self,
+        mock_dme_request_class,
+        mock_connection_class,
+        action_module,
     ):
         """Test run with validation errors."""
         # Setup mocks
@@ -283,7 +291,10 @@ no shutdown
     @patch("ansible_collections.cisco.dme.plugins.action.dme_validate.Connection")
     @patch("ansible_collections.cisco.dme.plugins.action.dme_validate.DmeRequest")
     def test_run_with_string_parents(
-        self, mock_dme_request_class, mock_connection_class, action_module
+        self,
+        mock_dme_request_class,
+        mock_connection_class,
+        action_module,
     ):
         """Test run with parents as string instead of list."""
         # Setup mocks
@@ -312,7 +323,10 @@ no shutdown
     @patch("ansible_collections.cisco.dme.plugins.action.dme_validate.Connection")
     @patch("ansible_collections.cisco.dme.plugins.action.dme_validate.DmeRequest")
     def test_run_with_string_lines(
-        self, mock_dme_request_class, mock_connection_class, action_module
+        self,
+        mock_dme_request_class,
+        mock_connection_class,
+        action_module,
     ):
         """Test run with lines as string instead of list."""
         # Setup mocks
@@ -372,7 +386,7 @@ no shutdown
         action_module._result = {}
 
         with patch(
-            "ansible_collections.cisco.dme.plugins.action.dme_validate.AnsibleArgSpecValidator"
+            "ansible_collections.cisco.dme.plugins.action.dme_validate.AnsibleArgSpecValidator",
         ) as mock_validator:
             mock_validator.return_value.validate.return_value = (
                 True,
@@ -390,7 +404,7 @@ no shutdown
         action_module._result = {}
 
         with patch(
-            "ansible_collections.cisco.dme.plugins.action.dme_validate.AnsibleArgSpecValidator"
+            "ansible_collections.cisco.dme.plugins.action.dme_validate.AnsibleArgSpecValidator",
         ) as mock_validator:
             mock_validator.return_value.validate.return_value = (
                 False,
@@ -430,7 +444,10 @@ no shutdown
     @patch("ansible_collections.cisco.dme.plugins.action.dme_validate.Connection")
     @patch("ansible_collections.cisco.dme.plugins.action.dme_validate.DmeRequest")
     def test_run_with_complex_config(
-        self, mock_dme_request_class, mock_connection_class, action_module
+        self,
+        mock_dme_request_class,
+        mock_connection_class,
+        action_module,
     ):
         """Test run with complex multi-line configuration."""
         # Setup mocks
