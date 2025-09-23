@@ -17,17 +17,17 @@ tests/
 │   │   └── dme_responses.py      # Mock DME API responses
 │   └── plugins/                  # Plugin-specific tests
 │       ├── action/               # Action plugin tests
-│       │   ├── test_dme_command.py
-│       │   ├── test_dme_config.py
-│       │   └── test_dme_validate.py
+│       │   ├── test_dme_command_action.py
+│       │   ├── test_dme_config_action.py
+│       │   └── test_dme_validate_action.py
 │       ├── httpapi/              # HttpApi plugin tests
-│       │   └── test_dme.py
+│       │   └── test_dme_httpapi.py
 │       ├── module_utils/         # Module utils tests
-│       │   └── test_dme.py
+│       │   └── test_dme_module_utils.py
 │       └── modules/              # Module tests
-│           ├── test_dme_command.py
-│           ├── test_dme_config.py
-│           └── test_dme_validate.py
+│           ├── test_dme_command_module.py
+│           ├── test_dme_config_module.py
+│           └── test_dme_validate_module.py
 └── integration/                  # Integration tests
     ├── integration_config.yml    # Integration test configuration
     ├── inventory.ini            # Test inventory
@@ -83,7 +83,7 @@ pytest tests/unit/plugins/modules/ -v
 #### Run Individual Test Files
 ```bash
 # Test specific action plugin
-pytest tests/unit/plugins/action/test_dme_command.py -v
+pytest tests/unit/plugins/action/test_dme_command_action.py -v
 
 # Test with coverage report
 pytest tests/unit/ --cov=plugins --cov-report=html
@@ -287,16 +287,31 @@ Example:
    ansible-galaxy collection install . --force
    ```
 
-2. **Connection Issues in Integration Tests**
+2. **Pytest Import Conflicts**
+   ```bash
+   # If you see "import file mismatch" errors, clean cache files
+   find tests/ -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+   find tests/ -name "*.pyc" -delete 2>/dev/null || true
+   ```
+
+3. **Connection Issues in Integration Tests**
    ```bash
    # Test basic connectivity
    ansible -i tests/integration/inventory.ini dme_devices -m ping
    ```
 
-3. **Mock Issues in Unit Tests**
+4. **Mock Issues in Unit Tests**
    ```bash
    # Check fixture imports
    pytest tests/unit/ -v --tb=short
+   ```
+
+5. **Ansible Module Not Found**
+   ```bash
+   # Install ansible-core if not available
+   pip install ansible-core
+   # Or use the requirements file
+   pip install -r tests/requirements.txt
    ```
 
 ### Debug Mode

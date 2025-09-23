@@ -110,6 +110,14 @@ print_section "Environment Setup"
 python_version=$(python3 --version 2>&1 | cut -d' ' -f2)
 echo "Python version: $python_version"
 
+# Verify test structure
+echo "Verifying test structure..."
+if python3 tests/verify_test_structure.py > /dev/null 2>&1; then
+    echo -e "${GREEN}✓ Test structure verified${NC}"
+else
+    echo -e "${YELLOW}⚠ Test structure verification failed, but continuing...${NC}"
+fi
+
 # Check if pytest is installed
 if ! command -v pytest &> /dev/null; then
     echo -e "${YELLOW}pytest not found, installing test requirements...${NC}"

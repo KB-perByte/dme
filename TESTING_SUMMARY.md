@@ -34,10 +34,10 @@ tests/
 
 #### Unit Tests (12 Python test files)
 
-- **Action Plugin Tests**: `test_dme_command.py`, `test_dme_config.py`, `test_dme_validate.py`
-- **HttpApi Plugin Test**: `test_dme.py`
-- **Module Utils Test**: `test_dme.py`
-- **Module Tests**: `test_dme_command.py`, `test_dme_config.py`, `test_dme_validate.py`
+- **Action Plugin Tests**: `test_dme_command_action.py`, `test_dme_config_action.py`, `test_dme_validate_action.py`
+- **HttpApi Plugin Test**: `test_dme_httpapi.py`
+- **Module Utils Test**: `test_dme_module_utils.py`
+- **Module Tests**: `test_dme_command_module.py`, `test_dme_config_module.py`, `test_dme_validate_module.py`
 - **Test Infrastructure**: `conftest.py`, `fixtures/dme_responses.py`, `__init__.py` files
 
 #### Integration Tests (10 YAML files)
