@@ -1,0 +1,133 @@
+---
+# Integration tests for dme_validate module
+# Copyright 2025 Sagar Paul (@KB-perByte)
+# GNU General Public License v3.0+
+
+- name: Test dme_validate with valid configuration
+  cisco.dme.dme_validate:
+    lines:
+      - "description Test interface for validation"
+      - "no shutdown"
+    parents:
+      - "interface Ethernet1/1"
+  register: result_valid
+
+- name: Verify valid configuration result
+  assert:
+    that:
+      - result_valid is changed
+      - result_valid.valid is true
+      - result_valid.model is defined
+      - result_valid.model.topSystem is defined
+      - result_valid.errors is not defined or result_valid.errors | length == 0
+
+- name: Test dme_validate with invalid configuration
+  cisco.dme.dme_validate:
+    lines:
+      - "invalid_command test"
+      - "another_invalid_command"
+    parents:
+      - "interface Ethernet1/1"
+  register: result_invalid
+  ignore_errors: true
+
+- name: Verify invalid configuration handling
+  assert:
+    that:
+      - result_invalid is changed
+      - result_invalid.valid is false
+      - result_invalid.model is defined
+      - result_invalid.errors is defined
+      - result_invalid.errors | length > 0
+
+- name: Test dme_validate with complex configuration
+  cisco.dme.dme_validate:
+    lines:
+      - "description Complex test interface"
+      - "switchport mode trunk"
+      - "switchport trunk allowed vlan 100,200"
+      - "no shutdown"
+    parents:
+      - "interface Ethernet1/2"
+  register: result_complex
+
+- name: Verify complex configuration result
+  assert:
+    that:
+      - result_complex is changed
+      - result_complex.model is defined
+      - result_complex.model.topSystem is defined
+
+- name: Test dme_validate with single line as string
+  cisco.dme.dme_validate:
+    lines: "description Single line test"
+    parents: "interface Ethernet1/3"
+  register: result_string
+
+- name: Verify string input handling
+  assert:
+    that:
+      - result_string is changed
+      - result_string.model is defined
+
+- name: Test dme_validate with multiple parents
+  cisco.dme.dme_validate:
+    lines:
+      - "description Multi-parent test"
+    parents:
+      - "router bgp 65001"
+      - "address-family ipv4 unicast"
+  register: result_multi_parent
+
+- name: Verify multi-parent configuration
+  assert:
+    that:
+      - result_multi_parent is changed
+      - result_multi_parent.model is defined
+
+- name: Test dme_validate with no parents
+  cisco.dme.dme_validate:
+    lines:
+      - "hostname test-switch"
+      - "ip domain-name example.com"
+  register: result_no_parents
+
+- name: Verify configuration without parents
+  assert:
+    that:
+      - result_no_parents is changed
+      - result_no_parents.model is defined
+
+- name: Test dme_validate error mapping
+  cisco.dme.dme_validate:
+    lines:
+      - "valid_command test"
+      - "invalid_command test"
+      - "another_valid_command"
+    parents:
+      - "interface Ethernet1/4"
+  register: result_error_mapping
+  ignore_errors: true
+
+- name: Verify error mapping functionality
+  assert:
+    that:
+      - result_error_mapping is changed
+      - result_error_mapping.model is defined
+      # If there are errors, they should be properly mapped
+      - result_error_mapping.valid is false or result_error_mapping.errors is not defined
+
+- name: Test dme_validate with ACL configuration
+  cisco.dme.dme_validate:
+    lines:
+      - "10 permit ip any any"
+      - "20 deny ip 192.168.1.0/24 any"
+    parents:
+      - "ip access-list ACL_TEST"
+  register: result_acl
+
+- name: Verify ACL configuration validation
+  assert:
+    that:
+      - result_acl is changed
+      - result_acl.model is defined

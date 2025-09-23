@@ -1,0 +1,91 @@
+---
+# Integration tests for dme_command module
+# Copyright 2025 Sagar Paul (@KB-perByte)
+# GNU General Public License v3.0+
+
+- name: Test dme_command with read_class
+  cisco.dme.dme_command:
+    read_class:
+      entry: "topSystem"
+      rsp_prop_include: "config-only"
+  register: result_class
+
+- name: Verify read_class result structure
+  assert:
+    that:
+      - result_class is changed
+      - result_class.class is defined
+      - result_class.class.imdata is defined
+      - result_class.class.totalCount is defined
+
+- name: Test dme_command with read_dn
+  cisco.dme.dme_command:
+    read_dn:
+      entry: "sys"
+      rsp_prop_include: "config-only"
+      rsp_subtree: "full"
+  register: result_dn
+
+- name: Verify read_dn result structure
+  assert:
+    that:
+      - result_dn is changed
+      - result_dn.mo is defined
+      - result_dn.mo.imdata is defined
+      - result_dn.mo.totalCount is defined
+
+- name: Test dme_command with both read_class and read_dn
+  cisco.dme.dme_command:
+    read_class:
+      entry: "topSystem"
+    read_dn:
+      entry: "sys"
+      rsp_subtree: "full"
+  register: result_both
+
+- name: Verify both results are present
+  assert:
+    that:
+      - result_both is changed
+      - result_both.class is defined
+      - result_both.mo is defined
+      - result_both.class.imdata is defined
+      - result_both.mo.imdata is defined
+
+- name: Test dme_command with query_target and target_subtree_class
+  cisco.dme.dme_command:
+    read_dn:
+      entry: "sys"
+      query_target: "subtree"
+      target_subtree_class: "topSystem"
+  register: result_query_target
+
+- name: Verify query_target result
+  assert:
+    that:
+      - result_query_target is changed
+      - result_query_target.mo is defined
+
+- name: Test dme_command error handling with invalid class
+  cisco.dme.dme_command:
+    read_class:
+      entry: "invalidClassName"
+  register: result_invalid
+  ignore_errors: true
+
+- name: Verify error handling
+  assert:
+    that:
+      - result_invalid is failed or (result_invalid.class.imdata | length == 0)
+
+- name: Test dme_command with minimal parameters
+  cisco.dme.dme_command:
+    read_class:
+      entry: "topSystem"
+  register: result_minimal
+
+- name: Verify minimal parameters work
+  assert:
+    that:
+      - result_minimal is changed
+      - result_minimal.class is defined

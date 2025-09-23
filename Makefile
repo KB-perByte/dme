@@ -12,6 +12,10 @@ help:
 	@echo "  lint_all         - Run all linting checks"
 	@echo "  collection-docs  - Generate collection documentation"
 	@echo "  collection-lint  - Run ansible-lint on the collection"
+	@echo "  test             - Run all tests"
+	@echo "  test-unit        - Run unit tests only"
+	@echo "  test-integration - Run integration tests only"
+	@echo "  test-coverage    - Run tests with coverage report"
 
 ## Run black syntax check
 check_black:
@@ -44,4 +48,24 @@ collection-docs:
 collection-lint:
 	ansible-lint
 
-.PHONY: help check_black check_flake8 check_isort fix_black fix_isort lint_all collection-docs collection-lint
+## Run all tests
+test:
+	./tests/run_tests.sh --all
+
+## Run unit tests only
+test-unit:
+	./tests/run_tests.sh --unit-only
+
+## Run integration tests only
+test-integration:
+	./tests/run_tests.sh --integration-only
+
+## Run tests with coverage report
+test-coverage:
+	./tests/run_tests.sh --unit-only --coverage
+
+## Install test dependencies
+test-deps:
+	pip install -r tests/requirements.txt
+
+.PHONY: help check_black check_flake8 check_isort fix_black fix_isort lint_all collection-docs collection-lint test test-unit test-integration test-coverage test-deps

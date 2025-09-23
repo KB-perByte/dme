@@ -1,0 +1,35 @@
+---
+# Integration test configuration for Cisco DME collection
+# Copyright 2025 Sagar Paul (@KB-perByte)
+# GNU General Public License v3.0+
+
+# Test inventory for DME integration tests
+# This file should be used with ansible-test integration command
+
+# Example usage:
+# ansible-test integration --inventory tests/integration/inventory.ini dme_command
+
+# Test targets configuration
+test_targets:
+  - dme_command
+  - dme_validate
+  - dme_config
+
+# Connection settings for testing
+connection_settings:
+  ansible_connection: ansible.netcommon.httpapi
+  ansible_network_os: cisco.dme.dme
+  ansible_httpapi_use_ssl: yes
+  ansible_httpapi_validate_certs: no
+  ansible_httpapi_port: 443
+
+# Test requirements
+requirements:
+  - ansible.netcommon
+  - ansible.utils
+
+# Mock test settings (for CI/CD environments without real devices)
+mock_testing:
+  enabled: true
+  mock_device_responses: true
+  skip_real_device_tests: true

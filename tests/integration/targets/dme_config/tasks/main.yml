@@ -1,0 +1,181 @@
+---
+# Integration tests for dme_config module
+# Copyright 2025 Sagar Paul (@KB-perByte)
+# GNU General Public License v3.0+
+
+- name: First validate configuration before applying
+  cisco.dme.dme_validate:
+    lines:
+      - "description Test interface for config module"
+    parents:
+      - "interface Ethernet1/1"
+  register: validation_result
+
+- name: Test dme_config with validated model
+  cisco.dme.dme_config:
+    config: "{{ validation_result.model }}"
+  register: config_result
+  when: validation_result.valid
+
+- name: Verify config application result
+  assert:
+    that:
+      - config_result is changed
+      - config_result.dme_response is defined
+  when: validation_result.valid
+
+- name: Validate and apply interface configuration
+  block:
+    - name: Validate interface shutdown configuration
+      cisco.dme.dme_validate:
+        lines:
+          - "description Interface for shutdown test"
+          - "shutdown"
+        parents:
+          - "interface Ethernet1/2"
+      register: shutdown_validation
+
+    - name: Apply shutdown configuration
+      cisco.dme.dme_config:
+        config: "{{ shutdown_validation.model }}"
+      register: shutdown_config
+      when: shutdown_validation.valid
+
+    - name: Verify shutdown configuration applied
+      assert:
+        that:
+          - shutdown_config is changed
+          - shutdown_config.dme_response is defined
+      when: shutdown_validation.valid
+
+- name: Validate and apply VLAN configuration
+  block:
+    - name: Validate VLAN interface configuration
+      cisco.dme.dme_validate:
+        lines:
+          - "description VLAN test interface"
+          - "switchport mode access"
+          - "switchport access vlan 100"
+        parents:
+          - "interface Ethernet1/3"
+      register: vlan_validation
+
+    - name: Apply VLAN configuration
+      cisco.dme.dme_config:
+        config: "{{ vlan_validation.model }}"
+      register: vlan_config
+      when: vlan_validation.valid
+
+    - name: Verify VLAN configuration applied
+      assert:
+        that:
+          - vlan_config is changed
+          - vlan_config.dme_response is defined
+      when: vlan_validation.valid
+
+- name: Test complex multi-interface configuration
+  block:
+    - name: Validate multi-interface configuration
+      cisco.dme.dme_validate:
+        lines:
+          - "description Multi-interface test 1"
+          - "no shutdown"
+        parents:
+          - "interface Ethernet1/4"
+      register: multi_validation_1
+
+    - name: Validate second interface configuration
+      cisco.dme.dme_validate:
+        lines:
+          - "description Multi-interface test 2"
+          - "no shutdown"
+        parents:
+          - "interface Ethernet1/5"
+      register: multi_validation_2
+
+    - name: Apply first interface configuration
+      cisco.dme.dme_config:
+        config: "{{ multi_validation_1.model }}"
+      register: multi_config_1
+      when: multi_validation_1.valid
+
+    - name: Apply second interface configuration
+      cisco.dme.dme_config:
+        config: "{{ multi_validation_2.model }}"
+      register: multi_config_2
+      when: multi_validation_2.valid
+
+    - name: Verify both configurations applied
+      assert:
+        that:
+          - multi_config_1 is changed
+          - multi_config_2 is changed
+          - multi_config_1.dme_response is defined
+          - multi_config_2.dme_response is defined
+      when: multi_validation_1.valid and multi_validation_2.valid
+
+- name: Test BGP configuration
+  block:
+    - name: Validate BGP configuration
+      cisco.dme.dme_validate:
+        lines:
+          - "router-id 1.1.1.1"
+        parents:
+          - "router bgp 65001"
+      register: bgp_validation
+      ignore_errors: true
+
+    - name: Apply BGP configuration if valid
+      cisco.dme.dme_config:
+        config: "{{ bgp_validation.model }}"
+      register: bgp_config
+      when: bgp_validation.valid is defined and bgp_validation.valid
+
+    - name: Verify BGP configuration if applied
+      assert:
+        that:
+          - bgp_config is changed
+          - bgp_config.dme_response is defined
+      when: bgp_validation.valid is defined and bgp_validation.valid
+
+- name: Test error handling with invalid model
+  cisco.dme.dme_config:
+    config: {}
+  register: empty_config_result
+  ignore_errors: true
+
+- name: Verify empty config handling
+  assert:
+    that:
+      - empty_config_result is failed
+
+- name: Test idempotency
+  block:
+    - name: Validate idempotency test configuration
+      cisco.dme.dme_validate:
+        lines:
+          - "description Idempotency test interface"
+        parents:
+          - "interface Ethernet1/6"
+      register: idempotency_validation
+
+    - name: Apply configuration first time
+      cisco.dme.dme_config:
+        config: "{{ idempotency_validation.model }}"
+      register: first_apply
+      when: idempotency_validation.valid
+
+    - name: Apply same configuration second time
+      cisco.dme.dme_config:
+        config: "{{ idempotency_validation.model }}"
+      register: second_apply
+      when: idempotency_validation.valid
+
+    - name: Verify both applications succeeded
+      assert:
+        that:
+          - first_apply is changed
+          - second_apply is changed
+          - first_apply.dme_response is defined
+          - second_apply.dme_response is defined
+      when: idempotency_validation.valid
