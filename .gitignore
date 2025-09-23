@@ -168,3 +168,6 @@ cython_debug/
 
 .vscode/settings.json
 *.pyc
+
+# Changelog plugin cache
+changelogs/.plugin-cache.yaml

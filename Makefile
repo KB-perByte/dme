@@ -16,6 +16,9 @@ help:
 	@echo "  test-unit        - Run unit tests only"
 	@echo "  test-integration - Run integration tests only"
 	@echo "  test-coverage    - Run tests with coverage report"
+	@echo "  changelog        - Generate changelog from fragments"
+	@echo "  changelog-release - Create a new release with changelog"
+	@echo "  changelog-deps   - Install changelog dependencies"
 
 ## Run black syntax check
 check_black:
@@ -68,4 +71,29 @@ test-coverage:
 test-deps:
 	pip install -r tests/requirements.txt
 
-.PHONY: help check_black check_flake8 check_isort fix_black fix_isort lint_all collection-docs collection-lint test test-unit test-integration test-coverage test-deps
+## Generate changelog from fragments
+changelog:
+	@if [ ! -d "changelogs/fragments" ] || [ -z "$$(ls -A changelogs/fragments 2>/dev/null)" ]; then \
+		echo "No changelog fragments found. Nothing to generate."; \
+	else \
+		export PATH="$$HOME/.local/bin:$$PATH"; \
+		python3 -m antsibull_changelog generate --reload-plugins; \
+		echo "Changelog generated successfully."; \
+	fi
+
+## Create a new release with changelog (requires VERSION variable)
+changelog-release:
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Error: VERSION variable is required. Usage: make changelog-release VERSION=1.2.3"; \
+		exit 1; \
+	fi
+	@export PATH="$$HOME/.local/bin:$$PATH"; \
+	python3 -m antsibull_changelog release --version $(VERSION)
+	@echo "Release $(VERSION) created successfully."
+	@echo "Don't forget to update galaxy.yml version and commit the changes."
+
+## Install changelog dependencies
+changelog-deps:
+	pip install antsibull-changelog ansible-core
+
+.PHONY: help check_black check_flake8 check_isort fix_black fix_isort lint_all collection-docs collection-lint test test-unit test-integration test-coverage test-deps changelog changelog-release changelog-deps

@@ -30,6 +30,12 @@ ansible-galaxy collection build
 ansible-galaxy collection install cisco-dme-*.tar.gz
 ```
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for detailed release notes and changes.
+
+For contributors: See [CHANGELOG_GUIDE.md](CHANGELOG_GUIDE.md) for information on how to add changelog entries.
+
 ## Modules
 
 ### dme_command
