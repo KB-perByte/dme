@@ -1,4 +1,4 @@
-# Default files to check for syntax
+# Default files to check for syntaxes
 CHECK_SYNTAX_FILES ?= plugins/ tests/
 
 # Help target
