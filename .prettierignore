@@ -1,4 +1,4 @@
-# files we don't want prettier to ever to look into
+# files we don't want prettier to ever to look into ever
 .*/
 coverage/
 
