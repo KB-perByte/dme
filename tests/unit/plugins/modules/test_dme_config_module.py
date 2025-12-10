@@ -29,6 +29,12 @@ class TestDmeConfigModule:
         assert dme_config.EXAMPLES is not None
         assert "cisco.dme.dme_config:" in dme_config.EXAMPLES
 
+    def test_module_again_examples(self):
+        """Test that module has examples."""
+        assert hasattr(dme_config, "EXAMPLES")
+        assert dme_config.EXAMPLES is not None
+        assert "cisco.dme.dme_config:" in dme_config.EXAMPLES
+    
     def test_module_return_documentation(self):
         """Test that module has return documentation."""
         assert hasattr(dme_config, "RETURN")
