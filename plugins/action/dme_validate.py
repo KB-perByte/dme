@@ -67,7 +67,19 @@ class ActionModule(ActionBase):
         if not valid:
             self._result["failed"] = True
             self._result["msg"] = errors
-
+            
+    def _check_argspec_dummy(self):
+        aav = AnsibleArgSpecValidator(
+            data=self._task.args,
+            schema=DOCUMENTATION,
+            schema_format="doc",
+            name=self._task.action,
+        )
+        valid, errors, self._task.args = aav.validate()
+        if not valid:
+            self._result["failed"] = True
+            self._result["msg"] = errors
+    
     def config_to_jsonrpc_payload(self, config_lines, start_id=1):
         """
         Convert configuration lines to JSON-RPC payload format.
