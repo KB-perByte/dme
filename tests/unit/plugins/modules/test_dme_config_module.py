@@ -184,6 +184,13 @@ class TestDmeConfigModule:
         assert "configuration" in short_desc.lower()
         assert "dme" in short_desc.lower()
 
+    def test_module_new_test_case(self):
+        """Test that module has return documentation."""
+        assert hasattr(dme_config, "RETURN")
+        assert dme_config.RETURN is not None
+        assert "before:" in dme_config.RETURN
+        assert "after:" in dme_config.RETURN
+    
     def test_module_description_detail(self):
         """Test module description provides sufficient detail."""
         import yaml
