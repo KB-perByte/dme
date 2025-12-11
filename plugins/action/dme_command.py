@@ -134,7 +134,7 @@ class ActionModule(ActionBase):
             connection=conn,
             task_vars=task_vars,
         )
-
+        self._check_argspec()
         self.ask = self._task.args
 
         if self.ask.get("read_class"):
