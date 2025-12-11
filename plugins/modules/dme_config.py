@@ -16,6 +16,10 @@ options:
     description: A raw DME model, validate it first using dme_validate module and then pass it here for configuration.
     type: dict
     required: true
+  dummy_config:
+    description: A raw DME model, validate it first using dme_validate module and then pass it here for configuration.
+    type: dict
+    required: false
 author: Sagar Paul (@KB-perByte)
 """
 
