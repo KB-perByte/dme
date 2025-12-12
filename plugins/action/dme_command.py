@@ -76,6 +76,18 @@ class ActionModule(ActionBase):
         )
         return api_response, code
 
+    def _check_argspec_again(self):
+        aav = AnsibleArgSpecValidator(
+            data=self._task.args,
+            schema=DOCUMENTATION,
+            schema_format="doc",
+            name=self._task.action,
+        )
+        valid, errors, self._task.args = aav.validate()
+        if not valid:
+            self._result["failed"] = True
+            self._result["msg"] = errors
+    
     def configure_mo_api(self, dme_request, read_dn):
         """
         Configure and execute DME managed object API request.
