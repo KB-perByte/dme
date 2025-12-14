@@ -60,7 +60,7 @@ class HttpApi(HttpApiBase):
             url = "{0}?{1}".format(url, urlencode(params_with_val))
         try:
             self._display_request(request_method)
-
+            self._display_request(request_method)
             response, response_data = self.connection.send(
                 url,
                 to_bytes(json.dumps(data)),
