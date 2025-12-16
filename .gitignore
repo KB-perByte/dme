@@ -171,3 +171,4 @@ cython_debug/
 
 # Changelog plugin cache
 changelogs/.plugin-cache.yaml
+sandbox/
