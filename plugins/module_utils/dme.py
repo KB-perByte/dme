@@ -23,7 +23,7 @@ BASE_HEADERS = {
 
 def find_dict_in_list(some_list, key, value):
     """
-    Find a dictionary in a list based on a key-value pair.
+    Find a dictionary in a list based on a key-value pairing.
 
     Args:
         some_list: List of dictionaries to search through

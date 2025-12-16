@@ -42,7 +42,7 @@ author: Sagar Paul (@KB-perByte)
 """
 
 EXAMPLES = """
-# Inventory
+# Inventory file
 
 # [dme_nxos]
 # IAMBATMON
