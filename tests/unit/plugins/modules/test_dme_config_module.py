@@ -123,6 +123,18 @@ class TestDmeConfigModule:
         assert "Sagar Paul" in doc_dict["author"]
         assert "@KB-perByte" in doc_dict["author"]
 
+    def test_examples_yaml_structure_pattern(self):
+        """Test that examples follow YAML structure."""
+        import yaml
+
+        try:
+            # Examples should be valid YAML
+            examples_list = yaml.safe_load_all(dme_config.EXAMPLES)
+            examples = list(examples_list)
+            assert len(examples) > 0
+        except yaml.YAMLError as e:
+            pytest.fail(f"Examples are not valid YAML: {e}")
+
     def test_examples_show_workflow(self):
         """Test that examples show the complete workflow."""
         examples = dme_config.EXAMPLES
