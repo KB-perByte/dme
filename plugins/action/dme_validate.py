@@ -119,6 +119,16 @@ class ActionModule(ActionBase):
         return api_response, code
 
     def run(self, tmp=None, task_vars=None):
+        """
+        Main execution method for the action plugin.
+
+        Args:
+            tmp: Temporary directory path
+            task_vars: Task variables
+
+        Returns:
+            Result dictionary with validation outcomes
+        """
         self._supports_check_mode = False
         self._result = super(ActionModule, self).run(tmp, task_vars)
 

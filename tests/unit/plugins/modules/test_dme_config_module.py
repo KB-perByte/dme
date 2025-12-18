@@ -6,6 +6,7 @@
 """Unit tests for modules.dme_config module."""
 
 import pytest
+import yaml
 from ansible_collections.cisco.dme.plugins.modules import dme_config
 
 
@@ -174,6 +175,18 @@ class TestDmeConfigModule:
         validate_pos = examples.find("dme_validate:")
         config_pos = examples.find("dme_config:")
         assert validate_pos < config_pos
+
+    def test_return_documentation_complete(self):
+        """Test that return documentation is complete."""
+
+        return_dict = yaml.safe_load(dme_config.RETURN)
+
+        for key in ["before", "after"]:
+            assert key in return_dict
+            assert "description" in return_dict[key]
+            assert "returned" in return_dict[key]
+            assert "type" in return_dict[key]
+            assert "sample" in return_dict[key]
 
     def test_module_short_description(self):
         """Test module short description is appropriate."""
