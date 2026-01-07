@@ -1,0 +1,3 @@
+---
+bugfix:
+  - check connection before proceeding with config update in dme_config action plugin

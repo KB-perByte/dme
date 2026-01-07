@@ -81,7 +81,7 @@ class ActionModule(ActionBase):
             task_vars=task_vars,
         )
 
-        if self._task.args.get("config"):
+        if self._task.args.get("config") and conn_request:
             (
                 self._result["dme_response"],
                 self._result["changed"],
