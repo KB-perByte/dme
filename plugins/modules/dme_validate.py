@@ -8,7 +8,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: dme_validate
-short_description: Validate and convert configuration on DME managed devices.
+short_description: IDk Validate and convert configuration on DME managed devices.
 description: This module validate and converts configuration on DME managed devices.
 version_added: 1.0.0
 options:
